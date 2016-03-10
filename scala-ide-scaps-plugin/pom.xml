@@ -15,6 +15,11 @@
 
 		<dependency>
 			<groupId>org.scala-search</groupId>
+			<artifactId>scaps-api_2.11</artifactId>
+			<version>0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-search</groupId>
 			<artifactId>scaps-core_2.11</artifactId>
 			<version>0.4</version>
 		</dependency>
@@ -56,6 +61,12 @@
 						</goals>
 						<configuration>
 							<artifactItems>
+								<artifactItem>
+									<groupId>org.scala-search</groupId>
+									<artifactId>scaps-api_2.11</artifactId>
+									<version>0.4</version>
+									<outputDirectory>${project.build.directory}/lib</outputDirectory>
+								</artifactItem>
 								<artifactItem>
 									<groupId>org.scala-search</groupId>
 									<artifactId>scaps-core_2.11</artifactId>
