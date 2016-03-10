@@ -13,7 +13,7 @@
   </modules>
   <properties>
     <tycho.version>0.22.0</tycho.version>
-    <scala.version>2.11.5</scala.version>
+    <scala.version>2.11.7</scala.version>
   </properties>
   <build>
     <sourceDirectory>${basedir}/src</sourceDirectory>
