@@ -34,9 +34,7 @@ class Activator extends AbstractUIPlugin {
    *
    * @return the shared instance
    */
-  def getDefault() {
-    return Activator.plugin;
-  }
+  def getDefault() = Activator.plugin
 
   /**
    * Returns an image descriptor for the image file at the given
