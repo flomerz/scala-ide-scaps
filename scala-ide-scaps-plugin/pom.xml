@@ -15,11 +15,6 @@
 
 		<dependency>
 			<groupId>org.scala-search</groupId>
-			<artifactId>scaps-api_2.11</artifactId>
-			<version>0.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-search</groupId>
 			<artifactId>scaps-core_2.11</artifactId>
 			<version>0.4</version>
 		</dependency>
@@ -28,11 +23,10 @@
 			<artifactId>scaps-scala_2.11</artifactId>
 			<version>0.4</version>
 		</dependency>
-
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-reflect</artifactId>
+			<version>2.11.7</version>
 		</dependency>
 
 	</dependencies>
@@ -48,38 +42,39 @@
 					</excludeResources>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
 				<executions>
-					<!-- copy the jar dependencies -->
 					<execution>
-						<id>copy</id>
-						<phase>initialize</phase>
+						<id>copy-source-dependencies</id>
+						<phase>validate</phase>
 						<goals>
-							<goal>copy</goal>
+							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.scala-search</groupId>
-									<artifactId>scaps-api_2.11</artifactId>
-									<version>0.4</version>
-									<outputDirectory>${project.build.directory}/lib</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.scala-search</groupId>
-									<artifactId>scaps-core_2.11</artifactId>
-									<version>0.4</version>
-									<outputDirectory>${project.build.directory}/lib</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.scala-search</groupId>
-									<artifactId>scaps-scala_2.11</artifactId>
-									<version>0.4</version>
-									<outputDirectory>${project.build.directory}/lib</outputDirectory>
-								</artifactItem>
-							</artifactItems>
+							<outputDirectory>${project.build.directory}/sources</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+							<excludeGroupIds>p2.eclipse-plugin</excludeGroupIds>
+							<classifier>sources</classifier>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-binary-dependencies</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/libs</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+							<excludeGroupIds>p2.eclipse-plugin</excludeGroupIds>
 						</configuration>
 					</execution>
 				</executions>
