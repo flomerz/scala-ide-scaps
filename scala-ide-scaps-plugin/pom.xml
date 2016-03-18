@@ -8,7 +8,7 @@
 		<groupId>a-group-id</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>scala_ide_scaps_plugin</artifactId>
+	<artifactId>scala-ide-scaps-plugin</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 	<dependencies>

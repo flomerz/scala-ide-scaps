@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/scala_ide_scaps_feature_1.0.0.qualifier.jar" id="scala_ide_scaps_feature" version="1.0.0.qualifier"/>
+   <feature url="features/scala-ide-scaps-feature_1.0.0.qualifier.jar" id="scala-ide-scaps-feature" version="1.0.0.qualifier"/>
 </site>

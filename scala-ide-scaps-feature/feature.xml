@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="scala_ide_scaps_feature"
-      label="Scala_ide_scaps_feature"
+      id="scala-ide-scaps-feature"
+      label="scala-ide-scaps-feature"
       version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
@@ -17,7 +17,7 @@
    </license>
 
    <plugin
-         id="scala_ide_scaps_plugin"
+         id="scala-ide-scaps-plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"
