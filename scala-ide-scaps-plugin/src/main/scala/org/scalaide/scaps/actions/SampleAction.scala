@@ -2,20 +2,24 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-package scala_ide_scaps_plugin.actions
+package org.scalaide.scaps.actions
 
 import java.io.File
+
+import scala.io.Codec
+import scala.io.Source
 import scala.reflect.internal.util.BatchSourceFile
-import scala.reflect.internal.util.SourceFile
+
 import org.eclipse.core.resources.ResourcesPlugin
-import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jface.action.IAction
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.ui.IWorkbenchWindow
 import org.eclipse.ui.IWorkbenchWindowActionDelegate
+
 import com.typesafe.scalalogging.StrictLogging
+
 import scalaz.std.stream.streamInstance
 import scaps.scala.featureExtraction.CompilerUtils
 import scaps.scala.featureExtraction.ExtractionError
@@ -23,9 +27,6 @@ import scaps.scala.featureExtraction.JarExtractor
 import scaps.scala.featureExtraction.ScalaSourceExtractor
 import scaps.searchEngine.SearchEngine
 import scaps.settings.Settings
-import scala.reflect.io.AbstractFile
-import scala.io.Source
-import scala.io.Codec
 
 /**
  * Our sample action implements workbench action delegate.
@@ -49,7 +50,7 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
     val workspacePath = workspace.getLocation
     val proj = workspace.getProjects.filter(_.hasNature(JavaCore.NATURE_ID)).head
     val javaProj = JavaCore.create(proj)
-    val classPath = javaProj.getRawClasspath.map(_.getPath.toString).toList
+    val classPath = javaProj.getResolvedClasspath(true).map(_.getPath.toString).toList
 
     val srcDirs = javaProj.getAllPackageFragmentRoots.filter(_.getKind == IPackageFragmentRoot.K_SOURCE)
     
@@ -84,8 +85,8 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
 
     jars.foreach { jar =>
       // extrahieren aller definitionen
-//      def defsWithErrors = extractor(new File(jar))
-      def defsWithErrors = sourceExtractor.apply(List(sourceFile))
+      def defsWithErrors = extractor(new File(jar))
+//      def defsWithErrors = sourceExtractor.apply(List(sourceFile))
 
       // Fehler behandeln
       def defs = ExtractionError.logErrors(defsWithErrors, logger.info(_))

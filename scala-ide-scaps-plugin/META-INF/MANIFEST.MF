@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Scala_ide_scaps_plugin
-Bundle-SymbolicName: scala_ide_scaps_plugin;singleton:=true
+Bundle-Name: scala-ide-scaps-plugin
+Bundle-SymbolicName: scala-ide-scaps-plugin;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: scala_ide_scaps_plugin.Activator
+Bundle-Activator: org.scalaide.scaps.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.scala-ide.scala210.jars;bundle-version="4.0.0",

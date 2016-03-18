@@ -7,7 +7,7 @@
       <actionSet
             label="Sample Action Set"
             visible="true"
-            id="scala_ide_scaps_plugin.actionSet">
+            id="org.scalaide.scaps.actionSet">
          <menu
                label="Sample &amp;Menu"
                id="sampleMenu">
@@ -16,9 +16,9 @@
             </separator>
          </menu>
          <action
-               class="scala_ide_scaps_plugin.actions.SampleAction"
+               class="org.scalaide.scaps.actions.SampleAction"
                icon="icons/sample.gif"
-               id="scala_ide_scaps_plugin.actions.SampleAction"
+               id="org.scalaide.scaps.actions.SampleAction"
                label="&amp;Sample Action"
                menubarPath="sampleMenu/sampleGroup"
                style="radio"

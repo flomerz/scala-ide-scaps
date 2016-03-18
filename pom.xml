@@ -1,70 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>a-group-id</groupId>
-  <artifactId>scala</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <modules>
-    <module>scala-ide-scaps-plugin</module>
-    <module>scala-ide-scaps-feature</module>
-    <module>scala-ide-scaps-updatesite</module>
-  </modules>
-  <properties>
-    <tycho.version>0.22.0</tycho.version>
-    <scala.version>2.11.7</scala.version>
-  </properties>
-  <build>
-    <sourceDirectory>${basedir}/src</sourceDirectory>
-    <testSourceDirectory>${basedir}/test</testSourceDirectory>
-    
-    <plugins>
-    
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-maven-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <extensions>true</extensions>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>target-platform-configuration</artifactId>
-        <version>${tycho.version}</version>
-        <configuration>
-          <resolver>p2</resolver>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>net.alchim31.maven</groupId>
-        <artifactId>scala-maven-plugin</artifactId>
-        <version>3.1.4</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>add-source</goal>
-              <goal>compile</goal>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <scalaVersion>${scala.version}</scalaVersion>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  <repositories>
-    <repository>
-       <id>eclipse luna</id>
-       <layout>p2</layout>
-       <url>http://download.eclipse.org/releases/luna</url>
-    </repository>
-    <repository>
-       <id>scala eclipse toolchain osgi</id>
-       <layout>p2</layout>
-       <url> http://download.scala-ide.org/sdk/lithium/e44/scala211/stable/site</url>
-    </repository>
-  </repositories>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>a-group-id</groupId>
+	<artifactId>scala</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modules>
+		<module>scala-ide-scaps-plugin</module>
+		<module>scala-ide-scaps-feature</module>
+		<module>scala-ide-scaps-updatesite</module>
+	</modules>
+	<properties>
+		<tycho.version>0.22.0</tycho.version>
+		<scala.version>2.11.7</scala.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<resolver>p2</resolver>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>3.1.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>add-source</goal>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<scalaVersion>${scala.version}</scalaVersion>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>eclipse luna</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/luna</url>
+		</repository>
+		<repository>
+			<id>scala eclipse toolchain osgi</id>
+			<layout>p2</layout>
+			<url> http://download.scala-ide.org/sdk/lithium/e44/scala211/stable/site</url>
+		</repository>
+	</repositories>
 
 </project>
