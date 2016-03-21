@@ -45,7 +45,7 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
    * in the workbench UI.
    * @see IWorkbenchWindowActionDelegate#run
    */
-  def run(action: IAction){
+  def run(action: IAction) {
     val workspace = ResourcesPlugin.getWorkspace.getRoot
     val workspacePath = workspace.getLocation
     val proj = workspace.getProjects.filter(_.hasNature(JavaCore.NATURE_ID)).head
@@ -53,20 +53,20 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
     val classPath = javaProj.getResolvedClasspath(true).map(_.getPath.toString).toList
 
     val srcDirs = javaProj.getAllPackageFragmentRoots.filter(_.getKind == IPackageFragmentRoot.K_SOURCE)
-    
-    def printEach[T](array: Array[T], what:T => String): Unit = array.foreach { x => println(what(x)) }
-    
-    def printEachFile(array: Array[File]): Unit = printEach(array, { x:File => x.getAbsolutePath })
+
+    def printEach[T](array: Array[T], what: T => String): Unit = array.foreach { x => println(what(x)) }
+
+    def printEachFile(array: Array[File]): Unit = printEach(array, { x: File => x.getAbsolutePath })
 
     def getFilesRecursive(file: File): Array[File] = {
       val dirFiles = file.listFiles
       printEachFile(dirFiles)
       dirFiles ++ dirFiles.filter(_.isDirectory).flatMap(getFilesRecursive)
     }
-    
+
     val srcFiles = srcDirs.flatMap { x => getFilesRecursive(workspacePath.append(x.getPath).toFile()) }
     printEachFile(srcFiles)
-    
+
     val scalaSrcFiles = srcFiles.filter(!_.getName.endsWith(".scala"))
     printEachFile(scalaSrcFiles)
 
@@ -76,17 +76,17 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
     val compiler = CompilerUtils.createCompiler(classPath)
     val sourceExtractor = new ScalaSourceExtractor(compiler)
     val extractor = new JarExtractor(compiler)
-    
-    val source = Source.fromFile("/home/flo/hsr/sem-6/BA/runtime-ScalaIDE-ScapsPlugin/scala-ide-scaps-testproject/src/main/scala/Hello.scala")(Codec.UTF8).toSeq
-    
-    val sourceFile = new BatchSourceFile("/home/flo/hsr/sem-6/BA/runtime-ScalaIDE-ScapsPlugin/scala-ide-scaps-testproject/src/main/scala/Hello.scala", source)
+
+    val source = Source.fromFile("/home/flo/hsr/sem-6/BA/runtime-ScalaIDE-EclipseApplication/scala-ide-scaps-testproject/src/main/scala/edu/scaps/Hello.scala")(Codec.UTF8).toSeq
+
+    val sourceFile = new BatchSourceFile("/home/flo/hsr/sem-6/BA/runtime-ScalaIDE-EclipseApplication/scala-ide-scaps-testproject/src/main/scala/edu/scaps/Hello.scala", source)
 
     val jars = List("/home/flo/.ivy2/cache/org.scalaz/scalaz-core_2.11/bundles/scalaz-core_2.11-7.2.1.jar")
 
     jars.foreach { jar =>
       // extrahieren aller definitionen
       def defsWithErrors = extractor(new File(jar))
-//      def defsWithErrors = sourceExtractor.apply(List(sourceFile))
+      //      def defsWithErrors = sourceExtractor.apply(List(sourceFile))
 
       // Fehler behandeln
       def defs = ExtractionError.logErrors(defsWithErrors, logger.info(_))
@@ -97,6 +97,20 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
 
     // index schliessen
     engine.finalizeIndex().get
+
+    val modules = engine.indexedModules().get
+
+    val result = engine.search("max", Set()).get
+    if (result.isRight) {
+      println("search with no errors!")
+      result.foreach(_.foreach { res =>
+        println("Score: " + res.score)
+        println("Explanation: " + res.explanation)
+        println("Entity: " + res.entity.name)
+      })
+    }
+    println("search done!")
+
   }
 
   /**
