@@ -50,7 +50,9 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
     val workspacePath = workspace.getLocation
     val proj = workspace.getProjects.filter(_.hasNature(JavaCore.NATURE_ID)).head
     val javaProj = JavaCore.create(proj)
-    val classPath = javaProj.getResolvedClasspath(true).map(_.getPath.toString).toList
+    val resClassPath = javaProj.getResolvedClasspath(true)
+    val classPath = resClassPath.map(_.getPath.toString).toList
+    val sourceClassPath = resClassPath.filter(_.getSourceAttachmentPath != null).map(_.getSourceAttachmentPath)
 
     val srcDirs = javaProj.getAllPackageFragmentRoots.filter(_.getKind == IPackageFragmentRoot.K_SOURCE)
 
@@ -70,23 +72,28 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
     val scalaSrcFiles = srcFiles.filter(!_.getName.endsWith(".scala"))
     printEachFile(scalaSrcFiles)
 
-    val engine = SearchEngine(Settings.fromApplicationConf).get
+    var conf = Settings.fromApplicationConf
+    //conf.index.indexDir = workspacePath.toString
+    val engine = SearchEngine(conf).get
     engine.resetIndexes()
 
     val compiler = CompilerUtils.createCompiler(classPath)
     val sourceExtractor = new ScalaSourceExtractor(compiler)
     val extractor = new JarExtractor(compiler)
 
-    val source = Source.fromFile("/home/flo/hsr/sem-6/BA/runtime-ScalaIDE-EclipseApplication/scala-ide-scaps-testproject/src/main/scala/edu/scaps/Hello.scala")(Codec.UTF8).toSeq
+    logger.info("classpath: [" + classPath.mkString(", ") + "]")
+    logger.info("workspace location: " + workspacePath);
 
-    val sourceFile = new BatchSourceFile("/home/flo/hsr/sem-6/BA/runtime-ScalaIDE-EclipseApplication/scala-ide-scaps-testproject/src/main/scala/edu/scaps/Hello.scala", source)
+    val source = Source.fromFile(workspacePath + "/scala-ide-scaps-testproject/src/main/scala/edu/scaps/Hello.scala")(Codec.UTF8).toSeq
 
-    val jars = List("/home/flo/.ivy2/cache/org.scalaz/scalaz-core_2.11/bundles/scalaz-core_2.11-7.2.1.jar")
+    val sourceFile = new BatchSourceFile(workspacePath + "/scala-ide-scaps-testproject/src/main/scala/edu/scaps/Hello.scala", source)
+
+    val jars = List(workspacePath + "/scalaz-core_2.11-7.2.1-sources.jar")
 
     jars.foreach { jar =>
       // extrahieren aller definitionen
-      def defsWithErrors = extractor(new File(jar))
-      //      def defsWithErrors = sourceExtractor.apply(List(sourceFile))
+      val defsWithErrors = extractor(new File(jar))
+      //            val defsWithErrors = sourceExtractor.apply(List(sourceFile))
 
       // Fehler behandeln
       def defs = ExtractionError.logErrors(defsWithErrors, logger.info(_))
