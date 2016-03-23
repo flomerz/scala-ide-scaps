@@ -72,8 +72,7 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
     val scalaSrcFiles = srcFiles.filter(!_.getName.endsWith(".scala"))
     printEachFile(scalaSrcFiles)
 
-    var conf = Settings.fromApplicationConf
-    //conf.index.indexDir = workspacePath.toString
+    var conf = Settings.fromApplicationConf.modIndex { index => index.copy(indexDir = workspacePath + "/.metadata/scaps") }
     val engine = SearchEngine(conf).get
     engine.resetIndexes()
 
