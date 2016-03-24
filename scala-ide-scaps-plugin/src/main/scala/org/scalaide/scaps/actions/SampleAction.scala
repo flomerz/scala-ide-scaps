@@ -5,12 +5,18 @@
 package org.scalaide.scaps.actions
 
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 import scala.io.Codec
 import scala.io.Source
 import scala.reflect.internal.util.BatchSourceFile
 
 import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.core.runtime.IStatus
+import org.eclipse.core.runtime.Status
+import org.eclipse.core.runtime.SubMonitor
+import org.eclipse.core.runtime.jobs.Job
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jface.action.IAction
@@ -89,33 +95,64 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
 
     val jars = List(workspacePath + "/scalaz-core_2.11-7.2.1-sources.jar")
 
-    jars.foreach { jar =>
-      // extrahieren aller definitionen
-      val defsWithErrors = extractor(new File(jar))
-      //            val defsWithErrors = sourceExtractor.apply(List(sourceFile))
-
-      // Fehler behandeln
-      def defs = ExtractionError.logErrors(defsWithErrors, logger.info(_))
-
-      // Defs in indexieren
-      engine.index(defs).get
+    def doWork(num: Int, monitor: IProgressMonitor) = {
+      monitor.setTaskName("task: " + num)
+      TimeUnit.SECONDS.sleep(3)
     }
 
-    // index schliessen
-    engine.finalizeIndex().get
+    def indexLibraries(monitor: IProgressMonitor) = {
+      monitor.setTaskName("index libs")
+      val subMonitor = SubMonitor.convert(monitor, 10)
+      for (i <- 0 to 10) {
+        doWork(i, subMonitor.newChild(1))
+      }
+      jars.foreach { jar =>
+        // extrahieren aller definitionen
+        val defsWithErrors = extractor(new File(jar))
+        //            val defsWithErrors = sourceExtractor.apply(List(sourceFile))
 
-    val modules = engine.indexedModules().get
+        // Fehler behandeln
+        def defs = ExtractionError.logErrors(defsWithErrors, logger.info(_))
 
-    val result = engine.search("max", Set()).get
-    if (result.isRight) {
-      println("search with no errors!")
-      result.foreach(_.foreach { res =>
-        println("Score: " + res.score)
-        println("Explanation: " + res.explanation)
-        println("Entity: " + res.entity.name)
-      })
+        // Defs in indexieren
+        engine.index(defs).get
+      }
+
     }
-    println("search done!")
+
+    def finalizeIndex(monitor: IProgressMonitor) = {
+      monitor.setTaskName("finalize index")
+      // index schliessen
+      engine.finalizeIndex().get
+    }
+
+    def searchModules(monitor: IProgressMonitor) = {
+      monitor.setTaskName("search modules")
+      TimeUnit.SECONDS.sleep(10);
+      val modules = engine.indexedModules().get
+
+      val result = engine.search("max", Set()).get
+      if (result.isRight) {
+        println("search with no errors!")
+        result.foreach(_.foreach { res =>
+          println("Score: " + res.score)
+          println("Explanation: " + res.explanation)
+          println("Entity: " + res.entity.name)
+        })
+      }
+      println("search done!")
+      Status.OK_STATUS
+    }
+
+    val job = new Job("IU Job") {
+      def run(monitor: IProgressMonitor): IStatus = {
+        val subMonitor = SubMonitor.convert(monitor, 3)
+        indexLibraries(subMonitor.newChild(1))
+        finalizeIndex(subMonitor.newChild(1))
+        searchModules(subMonitor.newChild(1))
+        Status.OK_STATUS
+      }
+    }.schedule()
 
   }
 
