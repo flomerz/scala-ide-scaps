@@ -1,8 +1,7 @@
-package org.scala.tools.eclipse.search
+package org.scalaide.scaps
 
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
-import org.scalaide.scaps.IUTest
 
 
 @RunWith(classOf[Suite])
