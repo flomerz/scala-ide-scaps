@@ -3,15 +3,29 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
+
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
+
+	<!-- <parent>
+		<groupId>org.scala-ide</groupId>
+		<artifactId>plugin-profiles</artifactId>
+		<version>1.0.11</version>
+	</parent> -->
+
 	<groupId>a-group-id</groupId>
 	<artifactId>scala</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
+
 	<modules>
 		<module>scala-ide-scaps-plugin</module>
 		<module>scala-ide-scaps-feature</module>
 		<module>scala-ide-scaps-updatesite</module>
+		<module>scala-ide-scaps-tests</module>
 	</modules>
+
 	<properties>
 		<tycho.version>0.22.0</tycho.version>
 		<scala.version>2.11.7</scala.version>
@@ -61,7 +75,7 @@
 		<repository>
 			<id>scala eclipse toolchain osgi</id>
 			<layout>p2</layout>
-			<url> http://download.scala-ide.org/sdk/lithium/e44/scala211/stable/site</url>
+			<url>http://download.scala-ide.org/sdk/lithium/e44/scala211/stable/site</url>
 		</repository>
 	</repositories>
 
