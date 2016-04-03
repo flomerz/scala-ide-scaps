@@ -6,6 +6,6 @@ import org.junit.runners.Suite
 
 @RunWith(classOf[Suite])
 @Suite.SuiteClasses(Array(
-  classOf[IUTest]
+  classOf[ExampleIntegrationTest]
 ))
 class TestsSuite {}

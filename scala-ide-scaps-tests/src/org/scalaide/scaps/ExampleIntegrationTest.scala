@@ -4,7 +4,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.Assert._
 
-class IUTest {
+class ExampleIntegrationTest {
 
   @Before
   def setup {
@@ -14,7 +14,6 @@ class IUTest {
   @Test
   def test1 {
     println("iuu test1")
-    fail("iuu fail!")
   }
 
 }
