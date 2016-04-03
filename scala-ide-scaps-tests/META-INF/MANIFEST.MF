@@ -4,6 +4,7 @@ Bundle-Name: Scala IDE Scaps Plugin (Test)
 Bundle-SymbolicName: scala-ide-scaps-tests
 Bundle-Version: 0.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit
 Bundle-ClassPath: .,
  target/libs/scala-library-2.11.7.jar,
  target/libs/scala-reflect-2.11.7.jar,

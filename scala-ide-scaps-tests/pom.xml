@@ -41,8 +41,7 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
-					<testSuite>${project.artifactId}</testSuite>
-					<testClass>org.scalaide.scpas.TestsSuite</testClass>
+					<testClass>org.scalaide.scaps.TestsSuite</testClass>
 				</configuration>
 			</plugin>
 
