@@ -2,15 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-package org.scalaide.scaps.actions
+package org.scalaide.scaps.ui.actions
 
 import java.io.File
 import java.util.concurrent.TimeUnit
-
 import scala.io.Codec
 import scala.io.Source
 import scala.reflect.internal.util.BatchSourceFile
-
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.IStatus
@@ -23,16 +21,14 @@ import org.eclipse.jface.action.IAction
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.ui.IWorkbenchWindow
 import org.eclipse.ui.IWorkbenchWindowActionDelegate
-
 import com.typesafe.scalalogging.StrictLogging
-
-import scalaz.std.stream.streamInstance
 import scaps.scala.featureExtraction.CompilerUtils
 import scaps.scala.featureExtraction.ExtractionError
 import scaps.scala.featureExtraction.JarExtractor
 import scaps.scala.featureExtraction.ScalaSourceExtractor
 import scaps.searchEngine.SearchEngine
 import scaps.settings.Settings
+import scalaz.std.stream.streamInstance
 
 /**
  * Our sample action implements workbench action delegate.
