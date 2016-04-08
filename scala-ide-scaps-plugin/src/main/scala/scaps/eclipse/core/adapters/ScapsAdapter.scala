@@ -26,28 +26,26 @@ class ScapsAdapter extends StrictLogging {
   private def sourceExtractor(classPath: Seq[String]) = new ScalaSourceExtractor(compiler(classPath))
   private def libraryExtractor(classPath: Seq[String]) = new JarExtractor(compiler(classPath))
 
-  private val searchEngine = {
-    val workspacePath = ResourcesPlugin.getWorkspace.getRoot.getLocation
-    val indexDir = workspacePath + "/.metadata/scaps"
+  private def searchEngine(indexDir: String) = {
     var conf = Settings.fromApplicationConf.modIndex { index => index.copy(indexDir = indexDir) }
     SearchEngine(conf).get
   }
 
-  def indexProject(classPath: Seq[String], projectSourcePaths: List[String]) {
+  def indexProject(indexDir: String, classPath: Seq[String], projectSourcePaths: List[String]) {
     val sourceFiles = projectSourcePaths.map { projectSourcePath =>
       val source = Source.fromFile(projectSourcePath)(Codec.UTF8).toSeq
       new BatchSourceFile(projectSourcePath, source)
     }
-    indexDefinitions(sourceExtractor(classPath)(sourceFiles))
+    indexDefinitions(indexDir, sourceExtractor(classPath)(sourceFiles))
   }
 
-  def indexLibrary(classPath: Seq[String], librarySourcePath: String) {
-    indexDefinitions(libraryExtractor(classPath)(new File(librarySourcePath)))
+  def indexLibrary(indexDir: String, classPath: Seq[String], librarySourcePath: String) {
+    indexDefinitions(indexDir, libraryExtractor(classPath)(new File(librarySourcePath)))
   }
 
-  private def indexDefinitions(definitionStream: Stream[ExtractionError \/ Definition]) {
+  private def indexDefinitions(indexDir: String, definitionStream: Stream[ExtractionError \/ Definition]) {
     def definitions = ExtractionError.logErrors(definitionStream, logger.info(_))
-    searchEngine.index(definitions).get
+    searchEngine(indexDir).index(definitions).get
   }
 
 }
