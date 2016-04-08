@@ -1,4 +1,4 @@
-package org.scalaide.scaps
+package scaps.eclipse
 
 import org.junit.runner.RunWith
 import org.junit.runners.Suite

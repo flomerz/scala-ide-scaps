@@ -1,4 +1,4 @@
-package org.scalaide.scaps
+package scaps.eclipse
 
 import org.junit.Before
 import org.junit.Test

@@ -1,4 +1,4 @@
-package org.scalaide.scaps.core.adapters
+package scaps.eclipse.core.adapters
 
 import org.eclipse.core.resources.ResourcesPlugin
 

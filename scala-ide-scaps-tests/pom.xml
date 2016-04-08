@@ -16,12 +16,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>1.9.0</version>
@@ -41,7 +35,7 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
-					<testClass>org.scalaide.scaps.TestsSuite</testClass>
+					<testClass>scaps.eclipse.TestsSuite</testClass>
 				</configuration>
 			</plugin>
 
