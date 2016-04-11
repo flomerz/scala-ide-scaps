@@ -37,7 +37,9 @@ class ScalaSearchPage extends DialogPage with ISearchPage {
       }
       
       def focusLost(focus: FocusEvent){
-        inputText.setText("Search for functions, methods and values...")
+        if(inputText.equals("")){
+          inputText.setText("Search for functions, methods and values...")
+        }
       }
       
     })
