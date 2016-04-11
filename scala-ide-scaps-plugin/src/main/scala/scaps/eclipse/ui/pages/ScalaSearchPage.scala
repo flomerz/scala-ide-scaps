@@ -13,6 +13,8 @@ import org.eclipse.swt.widgets.Text
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.widgets.Label
 import org.eclipse.jface.dialogs.Dialog
+import org.eclipse.swt.events.FocusListener
+import org.eclipse.swt.events.FocusEvent
 
 class ScalaSearchPage extends DialogPage with ISearchPage {
     
@@ -22,12 +24,23 @@ class ScalaSearchPage extends DialogPage with ISearchPage {
   def createControl(parent: Composite) {
     val result = new Composite(parent, SWT.NONE)
     result.setFont(parent.getFont)
-    val layout = new GridLayout(2, false)
+    val layout = new GridLayout(1, false)
     result.setLayout(layout)
     
     inputText = new Text(result, SWT.BORDER)
     inputText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
     inputText.setText("Search for functions, methods and values...")
+    inputText.addFocusListener(new FocusListener(){
+      
+      def focusGained(focus: FocusEvent){
+        inputText.setText("")
+      }
+      
+      def focusLost(focus: FocusEvent){
+        inputText.setText("Search for functions, methods and values...")
+      }
+      
+    })
     
     val exampleQueriesLabel = new Label(result, SWT.NONE)
     exampleQueriesLabel.setText("Example Queries")
@@ -37,12 +50,12 @@ class ScalaSearchPage extends DialogPage with ISearchPage {
     
     setControl(result)
     Dialog.applyDialogFont(result)
-    print("+++++++++++++++++++++")
   }
 
   def performAction(): Boolean = {
     print(inputText.getText)
-    InternalSearchUI.getInstance.runSearchInBackground(null, null)
+    //InternalSearchUI.getInstance.runSearchInBackground(null, null)
+    true
   }
 
   def setContainer(container: ISearchPageContainer) {
