@@ -2,30 +2,45 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <extension
-         point="org.eclipse.ui.actionSets">
+	<extension point="org.eclipse.ui.actionSets">
       <actionSet
-            label="Sample Action Set"
-            visible="true"
-            id="org.scalaide.scaps.actionSet">
+            description="Scaps Search Action"
+            id="scaps.eclipse.actionSet"
+            label="Scaps Search Actions"
+            visible="true">
+
          <menu
-               label="Sample &amp;Menu"
-               id="sampleMenu">
-            <separator
-                  name="sampleGroup">
-            </separator>
+               label="Search"
+               path="navigate"
+               id="org.eclipse.search.menu">
+                <groupMarker name="internalDialogGroup"/>   <!-- not to be used by clients  -->
+                <groupMarker name="dialogGroup"/>           <!-- to be used by clients      -->
+                <separator name="fileSearchContextMenuActionsGroup"/> <!-- to be used by clients      -->
+                <separator name="contextMenuActionsGroup"/> <!-- to be used by clients -->
+                <separator name="occurencesActionsGroup"/> <!-- to be used by clients -->
+                <separator name="extraSearchGroup"/> <!-- to be used by clients -->
          </menu>
          <action
-               class="org.scalaide.scaps.actions.SampleAction"
-               icon="icons/sample.gif"
-               id="org.scalaide.scaps.actions.SampleAction"
-               label="&amp;Sample Action"
-               menubarPath="sampleMenu/sampleGroup"
-               style="radio"
-               toolbarPath="sampleGroup"
-               tooltip="Hello, Eclipse world">
+               class="scaps.eclipse.ui.actions.ScalaSearchAction"
+               enablesFor="*"
+         	   id="ScapsEclipse.OpenScapsSearch"
+    		   label="Scaps Search"
+               menubarPath="org.eclipse.search.menu/dialogGroup"
+               style="push">
          </action>
       </actionSet>
    </extension>
+   
+   <extension point="org.eclipse.search.searchPages">
+	   <page id="scaps.eclipse.ui.pages.ScalaSearchPage"
+			label="Scala Search"
+			sizeHint="460,160"
+			extensions="java:90, jav:90"
+			showScopeSection="true"
+			canSearchEnclosingProjects="true"
+			class="scaps.eclipse.ui.pages.ScalaSearchPage">
+	   </page>
+   </extension>
+   
 
 </plugin>
