@@ -42,5 +42,54 @@
 	   </page>
    </extension>
    
+   <extension point="org.eclipse.ui.commands">
+      <category
+            name="Scala Search"
+            id="scaps.eclipse.commands.category">
+      </category>
+      <command
+            name="Scaps Assistant"
+            categoryId="scaps.eclipse.commands.category"
+            id="scaps.eclipse.commands.scapsassistantcommand">
+      </command>
+      <command
+            name="Scaps Search"
+            categoryId="scaps.eclipse.commands.category"
+            id="scaps.eclipse.commands.scapssearchcommand">
+      </command>
+      <command
+            name="Scaps Indexer"
+            categoryId="scaps.eclipse.commands.category"
+            id="scaps.eclipse.commands.scapsindexercommand">
+      </command>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="scaps.eclipse.commands.scapsassistantcommand"
+            class="scaps.eclipse.ui.handlers.ScapsAssistant">
+      </handler>
+      <handler
+            commandId="scaps.eclipse.commands.scapsindexercommand"
+            class="scaps.eclipse.ui.handlers.IndexHandler">
+      </handler>
+   </extension>
+   
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution locationURI="menu:edit?after=additions">
+       	<command
+              commandId="scaps.eclipse.commands.scapsassistantcommand"
+              id="scaps.eclipse.scapsassistantcommand">
+        </command>
+      </menuContribution>
+      <menuContribution locationURI="menu:project?after=additions">
+       	<command
+              commandId="scaps.eclipse.commands.scapsindexercommand"
+              id="scaps.eclipse.scapsindexercommand">
+        </command>
+      </menuContribution>
+   </extension>
+   
 
 </plugin>
