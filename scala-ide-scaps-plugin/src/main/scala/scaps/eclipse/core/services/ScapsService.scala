@@ -18,7 +18,7 @@ object ScapsService {
 
 class ScapsService(private val scapsAdapter: ScapsAdapter) {
 
-  def index(classPath: Seq[String], projectSourcePath: String, librarySourcePaths: Seq[String]) {
+  def index(classPath: Seq[String], projectSourcePaths: Seq[String], librarySourcePaths: Seq[String]) {
 
     def indexProjectTask(monitor: IProgressMonitor) {
       monitor.setTaskName("Index Project Sources")
@@ -33,8 +33,8 @@ class ScapsService(private val scapsAdapter: ScapsAdapter) {
         findFilesRecursive(new File(rootPath)).map(_.getAbsolutePath).filter(!_.endsWith(".scala")).toList
       }
 
-      val projectSourcePaths = findSourceFiles(projectSourcePath)
-      scapsAdapter.indexProject(classPath, projectSourcePaths)
+      val projectSourceFilePaths = projectSourcePaths.flatMap(findSourceFiles(_))
+      scapsAdapter.indexProject(classPath, projectSourceFilePaths)
     }
 
     def indexLibrariesTask(monitor: IProgressMonitor) {

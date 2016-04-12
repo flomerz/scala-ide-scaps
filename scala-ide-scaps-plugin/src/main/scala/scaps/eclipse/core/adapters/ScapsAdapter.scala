@@ -31,12 +31,12 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
     SearchEngine(conf).get
   }
 
-  def indexProject(classPath: Seq[String], projectSourcePaths: List[String]) {
-    val sourceFiles = projectSourcePaths.map { projectSourcePath =>
+  def indexProject(classPath: Seq[String], projectSourceFilePaths: Seq[String]) {
+    val sourceFiles = projectSourceFilePaths.map { projectSourcePath =>
       val source = Source.fromFile(projectSourcePath)(Codec.UTF8).toSeq
       new BatchSourceFile(projectSourcePath, source)
     }
-    indexDefinitions(sourceExtractor(classPath)(sourceFiles))
+    indexDefinitions(sourceExtractor(classPath)(sourceFiles.toList))
   }
 
   def indexLibrary(classPath: Seq[String], librarySourcePath: String) {
