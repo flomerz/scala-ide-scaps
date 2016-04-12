@@ -43,7 +43,7 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
     indexDefinitions(libraryExtractor(classPath)(new File(librarySourcePath)))
   }
 
-  def indexFinalize = searchEngine.finalizeIndex().get
+  def indexFinalize = searchEngine.finalizeIndex.get
 
   private def indexDefinitions(definitionStream: Stream[ExtractionError \/ Definition]) {
     def definitions = ExtractionError.logErrors(definitionStream, logger.info(_))

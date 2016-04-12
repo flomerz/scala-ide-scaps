@@ -10,7 +10,7 @@ import scaps.eclipse.core.models.ResultList
 import java.io.File
 
 object ScapsService {
-  def apply(indexDir: String) {
+  def apply(indexDir: String): ScapsService = {
     val scapsAdapter = new ScapsAdapter(indexDir)
     new ScapsService(scapsAdapter)
   }
@@ -62,7 +62,7 @@ class ScapsService(private val scapsAdapter: ScapsAdapter) {
         indexFinalize(subMonitor.newChild(1))
         Status.OK_STATUS
       }
-    }.schedule()
+    }.schedule
   }
 
 }

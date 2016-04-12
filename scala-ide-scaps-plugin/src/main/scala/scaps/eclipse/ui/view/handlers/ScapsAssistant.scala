@@ -9,10 +9,10 @@ class ScapsAssistantHandler extends AbstractHandler {
 
   def execute(event: ExecutionEvent): Object = {
     val window = HandlerUtil.getActiveWorkbenchWindowChecked(event)
-		MessageDialog.openInformation(
-				window.getShell(),
-				"ScalaSearchIDE",
-				"Scaps Assistant")
-		return null;
+    MessageDialog.openInformation(
+      window.getShell,
+      "ScalaSearchIDE",
+      "Scaps Assistant")
+    return null;
   }
 }

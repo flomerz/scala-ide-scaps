@@ -6,9 +6,11 @@ package scaps.eclipse.ui.view.actions
 
 import java.io.File
 import java.util.concurrent.TimeUnit
+
 import scala.io.Codec
 import scala.io.Source
 import scala.reflect.internal.util.BatchSourceFile
+
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.IStatus
@@ -21,14 +23,16 @@ import org.eclipse.jface.action.IAction
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.ui.IWorkbenchWindow
 import org.eclipse.ui.IWorkbenchWindowActionDelegate
+
 import com.typesafe.scalalogging.StrictLogging
+
+import scalaz.std.stream.streamInstance
 import scaps.scala.featureExtraction.CompilerUtils
 import scaps.scala.featureExtraction.ExtractionError
 import scaps.scala.featureExtraction.JarExtractor
 import scaps.scala.featureExtraction.ScalaSourceExtractor
 import scaps.searchEngine.SearchEngine
 import scaps.settings.Settings
-import scalaz.std.stream.streamInstance
 
 /**
  * Our sample action implements workbench action delegate.
@@ -68,7 +72,7 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
       dirFiles ++ dirFiles.filter(_.isDirectory).flatMap(getFilesRecursive)
     }
 
-    val srcFiles = srcDirs.flatMap { x => getFilesRecursive(workspacePath.append(x.getPath).toFile()) }
+    val srcFiles = srcDirs.flatMap { x => getFilesRecursive(workspacePath.append(x.getPath).toFile) }
     printEachFile(srcFiles)
 
     val scalaSrcFiles = srcFiles.filter(!_.getName.endsWith(".scala"))
@@ -76,7 +80,7 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
 
     var conf = Settings.fromApplicationConf.modIndex { index => index.copy(indexDir = workspacePath + "/.metadata/scaps") }
     val engine = SearchEngine(conf).get
-    engine.resetIndexes()
+    engine.resetIndexes
 
     val compiler = CompilerUtils.createCompiler(classPath)
     val sourceExtractor = new ScalaSourceExtractor(compiler)
@@ -119,13 +123,13 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
     def finalizeIndex(monitor: IProgressMonitor) = {
       monitor.setTaskName("finalize index")
       // index schliessen
-      engine.finalizeIndex().get
+      engine.finalizeIndex.get
     }
 
     def searchModules(monitor: IProgressMonitor) = {
       monitor.setTaskName("search modules")
       TimeUnit.SECONDS.sleep(10);
-      val modules = engine.indexedModules().get
+      val modules = engine.indexedModules.get
 
       val result = engine.search("max", Set()).get
       if (result.isRight) {
@@ -148,7 +152,7 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
         searchModules(subMonitor.newChild(1))
         Status.OK_STATUS
       }
-    }.schedule()
+    }.schedule
 
   }
 
@@ -167,7 +171,7 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
    * resources we previously allocated.
    * @see IWorkbenchWindowActionDelegate#dispose
    */
-  def dispose() {
+  def dispose {
   }
 
   /**
