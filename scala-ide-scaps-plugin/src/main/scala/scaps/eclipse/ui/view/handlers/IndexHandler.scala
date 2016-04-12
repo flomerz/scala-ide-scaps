@@ -6,7 +6,8 @@ import org.eclipse.core.commands.ExecutionEvent
 class IndexHandler extends AbstractHandler {
 
   def execute(event: ExecutionEvent): Object = {
-    return null;
+    //    IndexUCHandler()(IJavaProject)
+    null
   }
 
 }

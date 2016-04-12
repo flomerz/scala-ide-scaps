@@ -6,7 +6,7 @@ import org.eclipse.jdt.core.IJavaProject
 import scaps.eclipse.core.services.ScapsService
 
 object IndexUCHandler extends AbstractUCHandler {
-  def apply: IndexUCHandler = {
+  def apply(): IndexUCHandler = {
     new IndexUCHandler(ScapsService(_indexDir))
   }
 }
