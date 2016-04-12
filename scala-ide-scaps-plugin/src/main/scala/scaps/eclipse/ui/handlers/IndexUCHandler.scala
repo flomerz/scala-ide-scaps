@@ -1,14 +1,13 @@
 package scaps.eclipse.ui.handlers
 
+import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.jdt.core.IJavaProject
 
-import scaps.eclipse.core.adapters.ScapsAdapter
 import scaps.eclipse.core.services.ScapsService
 
-object IndexUCHandler {
+object IndexUCHandler extends AbstractUCHandler {
   def apply: IndexUCHandler = {
-    val indexDir = ""
-    new IndexUCHandler(ScapsService(indexDir))
+    new IndexUCHandler(ScapsService(_indexDir))
   }
 }
 
