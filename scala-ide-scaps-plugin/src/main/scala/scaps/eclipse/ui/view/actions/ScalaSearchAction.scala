@@ -10,7 +10,7 @@ import org.eclipse.search.ui.NewSearchUI
 class ScalaSearchAction extends IWorkbenchWindowActionDelegate {
 
   private var window: IWorkbenchWindow = _
-  private var pageID = "scaps.eclipse.ui.pages.ScalaSearchPage"
+  private var pageID = "scaps.eclipse.ui.view.pages.ScalaSearchPage"
 
   def init(window: IWorkbenchWindow) {
     this.window = window
