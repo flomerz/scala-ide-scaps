@@ -1,14 +1,12 @@
-package scaps.eclipse.ui.handlers
+package scaps.eclipse.ui.view.handlers
 
-import scaps.eclipse.core.services.ScapsService
 import org.eclipse.core.commands.AbstractHandler
 import org.eclipse.core.commands.ExecutionEvent
 
 class IndexHandler extends AbstractHandler {
-//  private val scapsService = new ScapsService
-  
+
   def execute(event: ExecutionEvent): Object = {
-		return null;
+    return null;
   }
-  
+
 }

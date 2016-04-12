@@ -1,4 +1,4 @@
-package scaps.eclipse.ui.actions
+package scaps.eclipse.ui.view.actions
 
 import org.eclipse.ui.IWorkbenchWindowActionDelegate
 import org.eclipse.jface.action.IAction
