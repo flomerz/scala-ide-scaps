@@ -68,4 +68,8 @@ class ScapsService(private val scapsAdapter: ScapsAdapter) {
     }.schedule
   }
 
+  def search(searchQuery: String): Seq[String] = {
+    scapsAdapter.search(searchQuery).map(_.entity.name)
+  }
+
 }

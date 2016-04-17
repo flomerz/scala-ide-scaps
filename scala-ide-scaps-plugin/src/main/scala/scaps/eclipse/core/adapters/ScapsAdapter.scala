@@ -16,6 +16,8 @@ import scaps.scala.featureExtraction.ScalaSourceExtractor
 import scaps.searchEngine.SearchEngine
 import scaps.settings.Settings
 import org.eclipse.jdt.core.ICompilationUnit
+import scaps.api.Result
+import scaps.api.ValueDef
 
 class ScapsAdapter(indexDir: String) extends StrictLogging {
   private def compiler(classPath: Seq[String]) = CompilerUtils.createCompiler(classPath)
@@ -43,6 +45,10 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
   }
 
   def indexFinalize = searchEngine.finalizeIndex.get
+
+  def search(searchQuery: String): Seq[Result[ValueDef]] = {
+    searchEngine.search(searchQuery, Set()).get.getOrElse(List())
+  }
 
   private def indexDefinitions(definitionStream: Stream[ExtractionError \/ Definition]): Unit = {
     def definitions = ExtractionError.logErrors(definitionStream, logger.info(_))
