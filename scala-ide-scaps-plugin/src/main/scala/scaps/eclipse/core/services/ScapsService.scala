@@ -22,9 +22,9 @@ object ScapsService {
 
 class ScapsService(private val scapsAdapter: ScapsAdapter) {
 
-  def index(classPath: Seq[String], projectSourceFragmentRoots: Seq[IPackageFragmentRoot], librarySourceRootFiles: Seq[File]) {
+  def index(classPath: Seq[String], projectSourceFragmentRoots: Seq[IPackageFragmentRoot], librarySourceRootFiles: Seq[File]): Unit = {
 
-    def indexProjectTask(monitor: IProgressMonitor) {
+    def indexProjectTask(monitor: IProgressMonitor): Unit = {
       monitor.setTaskName("Index Project Sources")
 
       def findSourceFiles(fragmentRoot: IPackageFragmentRoot): Seq[ICompilationUnit] = {
@@ -42,7 +42,7 @@ class ScapsService(private val scapsAdapter: ScapsAdapter) {
     }
 
     def indexLibrariesTask(monitor: IProgressMonitor): Unit = {
-      def indexLibraryTask(monitor: IProgressMonitor, librarySourceRootFile: File) {
+      def indexLibraryTask(monitor: IProgressMonitor, librarySourceRootFile: File): Unit = {
         monitor.setTaskName(librarySourceRootFile.getName)
         scapsAdapter.indexLibrary(classPath, librarySourceRootFile)
       }
@@ -52,7 +52,7 @@ class ScapsService(private val scapsAdapter: ScapsAdapter) {
       librarySourceRootFiles.foreach(indexLibraryTask(subMonitor, _))
     }
 
-    def indexFinalize(monitor: IProgressMonitor) {
+    def indexFinalize(monitor: IProgressMonitor): Unit = {
       monitor.setTaskName("Finalize Index")
       scapsAdapter.indexFinalize
     }

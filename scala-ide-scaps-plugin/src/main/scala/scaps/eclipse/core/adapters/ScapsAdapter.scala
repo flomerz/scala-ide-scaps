@@ -28,7 +28,7 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
     SearchEngine(conf).get
   }
 
-  def indexProject(classPath: Seq[String], projectSourceUnits: Seq[ICompilationUnit]) {
+  def indexProject(classPath: Seq[String], projectSourceUnits: Seq[ICompilationUnit]): Unit = {
     val sourceFiles = projectSourceUnits.map { projectSourceUnit =>
       val projectSourcePath = projectSourceUnit.toString
       val codec = Codec.UTF8 // how can i get the codec from a ICompilationUnit
@@ -38,13 +38,13 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
     indexDefinitions(sourceExtractor(classPath)(sourceFiles.toList))
   }
 
-  def indexLibrary(classPath: Seq[String], librarySourceRootFile: File) {
+  def indexLibrary(classPath: Seq[String], librarySourceRootFile: File): Unit = {
     indexDefinitions(libraryExtractor(classPath)(librarySourceRootFile))
   }
 
   def indexFinalize = searchEngine.finalizeIndex.get
 
-  private def indexDefinitions(definitionStream: Stream[ExtractionError \/ Definition]) {
+  private def indexDefinitions(definitionStream: Stream[ExtractionError \/ Definition]): Unit = {
     def definitions = ExtractionError.logErrors(definitionStream, logger.info(_))
     searchEngine.index(definitions).get
   }

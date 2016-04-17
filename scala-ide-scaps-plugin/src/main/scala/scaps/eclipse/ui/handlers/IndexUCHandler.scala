@@ -13,7 +13,7 @@ object IndexUCHandler extends AbstractUCHandler {
 
 class IndexUCHandler(private val scapsService: ScapsService) {
 
-  def apply(project: IJavaProject) {
+  def apply(project: IJavaProject): Unit = {
     val resolvedClassPath = project.getResolvedClasspath(true)
 
     val classPath = resolvedClassPath.map(_.getPath.toString).toList
