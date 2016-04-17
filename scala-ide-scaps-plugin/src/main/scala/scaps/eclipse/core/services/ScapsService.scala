@@ -8,6 +8,10 @@ import org.eclipse.core.runtime.jobs.Job
 import scaps.eclipse.core.adapters.ScapsAdapter
 import scaps.eclipse.core.models.ResultList
 import java.io.File
+import org.eclipse.jdt.core.IPackageFragmentRoot
+import org.eclipse.jdt.internal.core.PackageFragment
+import org.eclipse.jdt.core.ICompilationUnit
+import org.eclipse.jdt.core.IJavaElement
 
 object ScapsService {
   def apply(indexDir: String): ScapsService = {
@@ -18,35 +22,34 @@ object ScapsService {
 
 class ScapsService(private val scapsAdapter: ScapsAdapter) {
 
-  def index(classPath: Seq[String], projectSourcePaths: Seq[String], librarySourcePaths: Seq[String]) {
+  def index(classPath: Seq[String], projectSourceFragmentRoots: Seq[IPackageFragmentRoot], librarySourceRootFiles: Seq[File]) {
 
     def indexProjectTask(monitor: IProgressMonitor) {
       monitor.setTaskName("Index Project Sources")
 
-      def findSourceFiles(rootPath: String): List[String] = {
-
-        def findFilesRecursive(rootFile: File): Array[File] = {
-          val dirFiles = rootFile.listFiles
-          dirFiles ++ dirFiles.filter(_.isDirectory).flatMap(findFilesRecursive)
+      def findSourceFiles(fragmentRoot: IPackageFragmentRoot): Seq[ICompilationUnit] = {
+        def recursiveFindSourceFiles(packageFragments: Array[IJavaElement]): Array[ICompilationUnit] = {
+          // TODO: don't use instance cast
+          val sourceFiles = packageFragments.flatMap(_.asInstanceOf[PackageFragment].getCompilationUnits)
+          val subPackageFragments = packageFragments.flatMap(_.asInstanceOf[PackageFragment].getChildren)
+          sourceFiles ++ recursiveFindSourceFiles(subPackageFragments)
         }
-
-        findFilesRecursive(new File(rootPath)).map(_.getAbsolutePath).filter(!_.endsWith(".scala")).toList
+        recursiveFindSourceFiles(fragmentRoot.getChildren)
       }
 
-      val projectSourceFilePaths = projectSourcePaths.flatMap(findSourceFiles(_))
+      val projectSourceFilePaths = projectSourceFragmentRoots.flatMap(findSourceFiles)
       scapsAdapter.indexProject(classPath, projectSourceFilePaths)
     }
 
-    def indexLibrariesTask(monitor: IProgressMonitor) {
-
-      def indexLibraryTask(monitor: IProgressMonitor, librarySourcePath: String) {
-        monitor.setTaskName(librarySourcePath)
-        scapsAdapter.indexLibrary(classPath, librarySourcePath)
+    def indexLibrariesTask(monitor: IProgressMonitor): Unit = {
+      def indexLibraryTask(monitor: IProgressMonitor, librarySourceRootFile: File) {
+        monitor.setTaskName(librarySourceRootFile.getName)
+        scapsAdapter.indexLibrary(classPath, librarySourceRootFile)
       }
 
       monitor.setTaskName("Index Libraries")
-      val subMonitor = SubMonitor.convert(monitor, librarySourcePaths.length)
-      librarySourcePaths.foreach(indexLibraryTask(subMonitor, _))
+      val subMonitor = SubMonitor.convert(monitor, librarySourceRootFiles.length)
+      librarySourceRootFiles.foreach(indexLibraryTask(subMonitor, _))
     }
 
     def indexFinalize(monitor: IProgressMonitor) {
