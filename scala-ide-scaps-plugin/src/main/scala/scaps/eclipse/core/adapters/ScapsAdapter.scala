@@ -27,7 +27,7 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
   private def libraryExtractor(classPath: Seq[String]) = new JarExtractor(compiler(classPath))
 
   private def searchEngine = {
-    var conf = Settings.fromApplicationConf.modIndex { index => index.copy(indexDir = indexDir) }
+    val conf = Settings.fromApplicationConf.modIndex { index => index.copy(indexDir = indexDir) }
     SearchEngine(conf).get
   }
 
