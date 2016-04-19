@@ -30,12 +30,16 @@ class ScapsService(private val scapsAdapter: ScapsAdapter) {
 
       def findSourceFiles(fragmentRoot: IPackageFragmentRoot): Seq[ICompilationUnit] = {
         def recursiveFindSourceFiles(javaElements: Array[IJavaElement]): Array[ICompilationUnit] = {
-          val elements = javaElements.map(_ match {
-            case packageFragment: PackageFragment => (packageFragment.getCompilationUnits, packageFragment.getChildren)
-          }).unzip
-          val sourceFiles = elements._1.flatten
-          val subPackageFragments = elements._2.flatten
-          sourceFiles ++ recursiveFindSourceFiles(subPackageFragments)
+          javaElements.toList match {
+            case Nil => Array()
+            case _ =>
+              val elements = javaElements.map(_ match {
+                case packageFragment: PackageFragment => (packageFragment.getCompilationUnits, packageFragment.getChildren.filter(_.isInstanceOf[PackageFragment]))
+              }).unzip
+              val sourceFiles = elements._1.flatten
+              val subPackageFragments = elements._2.flatten
+              sourceFiles ++ recursiveFindSourceFiles(subPackageFragments)
+          }
         }
         recursiveFindSourceFiles(fragmentRoot.getChildren)
       }
