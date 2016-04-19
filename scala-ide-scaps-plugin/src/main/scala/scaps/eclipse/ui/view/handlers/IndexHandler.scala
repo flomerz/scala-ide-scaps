@@ -15,9 +15,9 @@ class IndexHandler extends AbstractHandler {
     val window = HandlerUtil.getActiveWorkbenchWindowChecked(event)
     val selected: Array[IProject] = BuildUtilities.findSelectedProjects(window)
     //    new ProjectSelectionDialog(window, selected).open()
-    val proj = selected.filter(_.hasNature(JavaCore.NATURE_ID)).head
-    val javaProj = JavaCore.create(proj)
-    IndexUCHandler()(javaProj)
+    val projects = selected.filter(_.hasNature(JavaCore.NATURE_ID))
+    val javaProjects = projects.map(JavaCore.create)
+    IndexUCHandler()(javaProjects)
     null
   }
 

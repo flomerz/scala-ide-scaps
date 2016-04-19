@@ -13,14 +13,16 @@ object IndexUCHandler extends AbstractUCHandler {
 
 class IndexUCHandler(private val scapsService: ScapsService) {
 
-  def apply(project: IJavaProject): Unit = {
-    val resolvedClassPath = project.getResolvedClasspath(true)
+  def apply(projects: Seq[IJavaProject]): Unit = {
+    projects.map { project =>
+      val resolvedClassPath = project.getResolvedClasspath(true)
 
-    val classPath = resolvedClassPath.map(_.getPath.toString).toList
-    val librarySourceRootFiles = resolvedClassPath.filter(_.getSourceAttachmentPath != null).map(_.getSourceAttachmentPath.toFile)
+      val classPath = resolvedClassPath.map(_.getPath.toString).toList
+      val librarySourceRootFiles = resolvedClassPath.filter(_.getSourceAttachmentPath != null).map(_.getSourceAttachmentPath.toFile)
 
-    val projectSourceFragmentRoots = project.getAllPackageFragmentRoots.filter(_.getKind == IPackageFragmentRoot.K_SOURCE)
-    scapsService.index(classPath, projectSourceFragmentRoots, librarySourceRootFiles)
+      val projectSourceFragmentRoots = project.getAllPackageFragmentRoots.filter(_.getKind == IPackageFragmentRoot.K_SOURCE)
+      scapsService.index(classPath, projectSourceFragmentRoots, librarySourceRootFiles)
+    }
   }
 
 }
