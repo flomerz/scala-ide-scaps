@@ -20,6 +20,8 @@ import scaps.api.Result
 import scaps.api.ValueDef
 
 class ScapsAdapter(indexDir: String) extends StrictLogging {
+  private val workspacePath = ResourcesPlugin.getWorkspace.getRoot.getLocation
+
   private def compiler(classPath: Seq[String]) = CompilerUtils.createCompiler(classPath)
 
   private def sourceExtractor(classPath: Seq[String]) = new ScalaSourceExtractor(compiler(classPath))
@@ -32,10 +34,11 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
 
   def indexProject(classPath: Seq[String], projectSourceUnits: Seq[ICompilationUnit]): Unit = {
     val sourceFiles = projectSourceUnits.map { projectSourceUnit =>
-      val projectSourcePath = projectSourceUnit.toString
+      val projectSourcePath = projectSourceUnit.getPath
+      val projectSourceAbsolutePath = workspacePath.append(projectSourcePath).toOSString
       val codec = Codec.UTF8 // how can i get the codec from a ICompilationUnit
-      val source = Source.fromFile(projectSourcePath)(codec).toSeq
-      new BatchSourceFile(projectSourcePath, source)
+      val source = Source.fromFile(projectSourceAbsolutePath)(codec).toSeq
+      new BatchSourceFile(projectSourceAbsolutePath, source)
     }
     indexDefinitions(sourceExtractor(classPath)(sourceFiles.toList))
   }
