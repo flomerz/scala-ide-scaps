@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jdt.internal.core.PackageFragment
 import org.eclipse.jdt.core.ICompilationUnit
 import org.eclipse.jdt.core.IJavaElement
+import org.eclipse.jdt.internal.core.JavaElement
 
 object ScapsService {
   def apply(indexDir: String): ScapsService = {
@@ -28,10 +29,12 @@ class ScapsService(private val scapsAdapter: ScapsAdapter) {
       monitor.setTaskName("Index Project Sources")
 
       def findSourceFiles(fragmentRoot: IPackageFragmentRoot): Seq[ICompilationUnit] = {
-        def recursiveFindSourceFiles(packageFragments: Array[IJavaElement]): Array[ICompilationUnit] = {
-          // TODO: don't use instance cast
-          val sourceFiles = packageFragments.flatMap(_.asInstanceOf[PackageFragment].getCompilationUnits)
-          val subPackageFragments = packageFragments.flatMap(_.asInstanceOf[PackageFragment].getChildren)
+        def recursiveFindSourceFiles(javaElements: Array[IJavaElement]): Array[ICompilationUnit] = {
+          val elements = javaElements.map(_ match {
+            case packageFragment: PackageFragment => (packageFragment.getCompilationUnits, packageFragment.getChildren)
+          }).unzip
+          val sourceFiles = elements._1.flatten
+          val subPackageFragments = elements._2.flatten
           sourceFiles ++ recursiveFindSourceFiles(subPackageFragments)
         }
         recursiveFindSourceFiles(fragmentRoot.getChildren)
