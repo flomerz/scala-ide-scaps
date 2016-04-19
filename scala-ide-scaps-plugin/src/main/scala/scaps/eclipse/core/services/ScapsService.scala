@@ -56,7 +56,7 @@ class ScapsService(private val scapsAdapter: ScapsAdapter) {
 
       monitor.setTaskName("Index Libraries")
       val subMonitor = SubMonitor.convert(monitor, librarySourceRootFiles.length)
-      librarySourceRootFiles.foreach(indexLibraryTask(subMonitor, _))
+      librarySourceRootFiles.foreach(indexLibraryTask(subMonitor.newChild(1), _))
     }
 
     def indexFinalize(monitor: IProgressMonitor): Unit = {
