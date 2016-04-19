@@ -36,7 +36,7 @@
 			label="Scala Search"
 			sizeHint="460,160"
 			extensions="java:90, jav:90"
-			showScopeSection="true"
+			showScopeSection="false"
 			canSearchEnclosingProjects="true"
 			class="scaps.eclipse.ui.view.pages.ScalaSearchPage">
 	   </page>
