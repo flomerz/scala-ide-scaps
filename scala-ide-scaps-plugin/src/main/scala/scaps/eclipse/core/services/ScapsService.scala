@@ -67,8 +67,8 @@ class ScapsService(private val scapsAdapter: ScapsAdapter) {
     new Job("Scaps Indexing") {
       def run(monitor: IProgressMonitor): IStatus = {
         val subMonitor = SubMonitor.convert(monitor, 3)
-        indexProjectTask(subMonitor.newChild(1))
         indexLibrariesTask(subMonitor.newChild(1))
+        indexProjectTask(subMonitor.newChild(1))
         indexFinalize(subMonitor.newChild(1))
         Status.OK_STATUS
       }
