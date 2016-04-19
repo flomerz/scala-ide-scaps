@@ -14,7 +14,9 @@ object SearchUCHandler extends AbstractUCHandler {
 class SearchUCHandler(private val scapsService: ScapsService) {
 
   def apply(searchQuery: String): Unit = {
-    scapsService.search(searchQuery).foreach(println(_))
+    val results = scapsService.search(searchQuery)
+    println("Results:")
+    results.foreach(println)
   }
 
 }
