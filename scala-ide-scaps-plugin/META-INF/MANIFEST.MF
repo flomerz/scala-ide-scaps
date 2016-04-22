@@ -38,3 +38,4 @@ Bundle-ClassPath: target/libs/async-http-client-1.8.10.jar,
  target/libs/slf4j-api-1.7.7.jar,
  target/libs/upickle_2.11-0.2.6.jar,
  .
+Import-Package: org.eclipse.jdt.internal.ui.workingsets
