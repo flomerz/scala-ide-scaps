@@ -1,11 +1,14 @@
-package scaps.eclipse.ui.view.pages
+package scaps.eclipse.ui.view.search
 
+import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.core.runtime.IStatus
 import org.eclipse.jface.dialogs.Dialog
 import org.eclipse.jface.dialogs.DialogPage
 import org.eclipse.search.ui.IQueryListener
 import org.eclipse.search.ui.ISearchPage
 import org.eclipse.search.ui.ISearchPageContainer
 import org.eclipse.search.ui.ISearchQuery
+import org.eclipse.search.ui.ISearchResult
 import org.eclipse.search.ui.NewSearchUI
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.FocusEvent
@@ -14,14 +17,14 @@ import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
-import org.eclipse.core.runtime.IStatus
 import org.eclipse.swt.widgets.Text
-import org.eclipse.core.runtime.IProgressMonitor
-import org.eclipse.core.runtime.OperationCanceledException
-import org.eclipse.search.ui.ISearchResult
 import scaps.eclipse.ui.handlers.SearchUCHandler
+import org.eclipse.core.runtime.Status
+import org.eclipse.search.ui.ISearchResultListener
+import org.eclipse.jface.resource.ImageDescriptor
+import com.typesafe.scalalogging.StrictLogging
 
-class ScalaSearchPage extends DialogPage with ISearchPage {
+class ScapsSearchPage extends DialogPage with ISearchPage with StrictLogging {
 
   private var inputText: Text = _
 
@@ -59,47 +62,10 @@ class ScalaSearchPage extends DialogPage with ISearchPage {
   }
 
   def performAction: Boolean = {
-    print(inputText.getText)
-    SearchUCHandler()(inputText.getText)
-
-    return true
-
-    NewSearchUI.addQueryListener(new IQueryListener() {
-      def queryAdded(q: ISearchQuery) {}
-
-      def queryRemoved(q: ISearchQuery) {}
-
-      def queryStarting(q: ISearchQuery) {}
-
-      def queryFinished(q: ISearchQuery) {}
-    })
-
-    NewSearchUI.runQueryInBackground(new ISearchQuery() {
-      var searchResult: ISearchResult = _
-
-      def run(m: IProgressMonitor): IStatus = {
-        // val result = searchUChandler.search(...)
-        // searchResult = result...
-        null
-      }
-
-      def getLabel(): String = {
-        // name vo suechi
-        "TODO"
-      }
-
-      def canRerun(): Boolean = true
-
-      def canRunInBackground(): Boolean = true
-
-      def getSearchResult(): ISearchResult = searchResult
-    })
-
-    //InternalSearchUI.getInstance.runSearchInBackground(null, null)
+    NewSearchUI.runQueryInBackground(new ScapsSearchQuery(inputText.getText))
+    NewSearchUI.activateSearchResultView()
     true
   }
 
-  def setContainer(container: ISearchPageContainer) {
-
-  }
+  def setContainer(container: ISearchPageContainer): Unit = {}
 }

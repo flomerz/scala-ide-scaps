@@ -13,6 +13,8 @@ import org.eclipse.jdt.internal.core.PackageFragment
 import org.eclipse.jdt.core.ICompilationUnit
 import org.eclipse.jdt.core.IJavaElement
 import org.eclipse.jdt.internal.core.JavaElement
+import scaps.api.Result
+import scaps.api.ValueDef
 
 object ScapsService {
   def apply(indexDir: String): ScapsService = {
@@ -74,8 +76,8 @@ class ScapsService(private val scapsAdapter: ScapsAdapter) {
     }.schedule
   }
 
-  def search(searchQuery: String): Seq[String] = {
-    scapsAdapter.search(searchQuery).map(_.entity.name)
+  def search(searchQuery: String): Seq[Result[ValueDef]] = {
+    scapsAdapter.search(searchQuery)
   }
 
 }

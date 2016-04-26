@@ -32,16 +32,23 @@
    </extension>
    
    <extension point="org.eclipse.search.searchPages">
-	   <page id="scaps.eclipse.ui.view.pages.ScalaSearchPage"
+	   <page id="scaps.eclipse.ui.view.search.ScapsSearchPage"
 			label="Scala Search"
 			sizeHint="460,160"
 			extensions="java:90, jav:90"
 			showScopeSection="false"
 			canSearchEnclosingProjects="true"
-			class="scaps.eclipse.ui.view.pages.ScalaSearchPage">
+			class="scaps.eclipse.ui.view.search.ScapsSearchPage">
 	   </page>
    </extension>
    
+	<!-- Search Results panel extension point -->
+	<extension point="org.eclipse.search.searchResultViewPages">
+		<viewPage id="scaps.eclipse.ui.view.search.ScapsSearchResultPage"
+				searchResultClass="scaps.eclipse.ui.view.search.ScapsSearchResult"
+				class="scaps.eclipse.ui.view.search.ScapsSearchResultPage" />
+	</extension>
+
    <extension point="org.eclipse.ui.commands">
       <category
             name="Scala Search"
