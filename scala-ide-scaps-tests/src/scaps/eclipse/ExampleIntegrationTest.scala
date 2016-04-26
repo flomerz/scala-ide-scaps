@@ -16,6 +16,7 @@ class ExampleIntegrationTest {
   }
 
   @Test
+  @Ignore
   def test1 {
     val workspace = ResourcesPlugin.getWorkspace.getRoot
     val workspacePath = workspace.getLocation

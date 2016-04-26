@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.Status
 import org.eclipse.core.runtime.SubMonitor
 import org.eclipse.core.runtime.jobs.Job
 import scaps.eclipse.core.adapters.ScapsAdapter
-import scaps.eclipse.core.models.ResultList
 import java.io.File
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jdt.internal.core.PackageFragment
