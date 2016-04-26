@@ -18,6 +18,7 @@ import scaps.settings.Settings
 import org.eclipse.jdt.core.ICompilationUnit
 import scaps.api.Result
 import scaps.api.ValueDef
+import org.eclipse.core.resources.IFile
 
 class ScapsAdapter(indexDir: String) extends StrictLogging {
   private val workspacePath = ResourcesPlugin.getWorkspace.getRoot.getLocation
@@ -36,8 +37,8 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
     val sourceFiles = projectSourceUnits.map { projectSourceUnit =>
       val projectSourcePath = projectSourceUnit.getPath
       val projectSourceAbsolutePath = workspacePath.append(projectSourcePath).toOSString
-      val codec = Codec.UTF8 // how can i get the codec from a ICompilationUnit
-      val source = Source.fromFile(projectSourceAbsolutePath)(codec).toSeq
+      val codec = projectSourceUnit.getResource.asInstanceOf[IFile].getCharset
+      val source = Source.fromFile(projectSourceAbsolutePath, codec).toSeq
       new BatchSourceFile(projectSourceAbsolutePath, source)
     }
     indexDefinitions(sourceExtractor(classPath)(sourceFiles.toList))
