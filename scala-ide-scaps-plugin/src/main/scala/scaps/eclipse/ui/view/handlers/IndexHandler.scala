@@ -8,6 +8,7 @@ import org.eclipse.ui.handlers.HandlerUtil
 import org.eclipse.ui.internal.dialogs.WorkingSetNewWizard
 import org.eclipse.ui.internal.AbstractWorkingSetManager
 import org.eclipse.ui.PlatformUI
+import org.eclipse.ui.internal.WorkingSet
 
 class IndexHandler extends AbstractHandler {
 
@@ -29,11 +30,17 @@ class IndexHandler extends AbstractHandler {
     //    val x = PlatformUI.getWorkbench().getWorkingSetManager().createWorkingSet("Project Selection Indexer", null)
     //    PlatformUI.getWorkbench.getWorkingSetManager.createWorkingSetSelectionDialog(window.getShell, true).open()
     //createWorkingSetEditWizard(fWorkingSet)
-    val t = IWorkingSetIDs.JAVA
-    val ids = new Array[String](1)
-    ids(0) = t
-    val x = PlatformUI.getWorkbench.getWorkingSetManager.createWorkingSetNewWizard(ids)
-    val dialog = new WizardDialog(window.getShell, x)
+    val workingSetManager = PlatformUI.getWorkbench.getWorkingSetManager
+    val SCAPS_WORKING_SET_NAME = "ScapsWorkingSet"
+
+    val scapsWorkingSet = Option(workingSetManager.getWorkingSet(SCAPS_WORKING_SET_NAME)).getOrElse {
+      val newScapsWorkingSet = workingSetManager.createWorkingSet(SCAPS_WORKING_SET_NAME, Array())
+      newScapsWorkingSet.setId(IWorkingSetIDs.JAVA)
+      workingSetManager.addWorkingSet(newScapsWorkingSet)
+      newScapsWorkingSet
+    }
+    val workingSetWizard = workingSetManager.createWorkingSetEditWizard(scapsWorkingSet)
+    val dialog = new WizardDialog(window.getShell, workingSetWizard)
     dialog.create()
     dialog.open()
     null
