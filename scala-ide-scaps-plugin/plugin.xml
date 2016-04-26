@@ -69,6 +69,11 @@
             categoryId="scaps.eclipse.commands.category"
             id="scaps.eclipse.commands.scapsindexercommand">
       </command>
+      <command
+            name="Scaps Project Selection"
+            categoryId="scaps.eclipse.commands.category"
+            id="scaps.eclipse.commands.scapsprojectselectioncommand">
+      </command>
    </extension>
    
    <extension
@@ -80,6 +85,10 @@
       <handler
             commandId="scaps.eclipse.commands.scapsindexercommand"
             class="scaps.eclipse.ui.view.handlers.IndexHandler">
+      </handler>
+      <handler
+            commandId="scaps.eclipse.commands.scapsprojectselectioncommand"
+            class="scaps.eclipse.ui.view.handlers.ProjectSelectionHandler">
       </handler>
    </extension>
    
@@ -94,6 +103,10 @@
        	<command
               commandId="scaps.eclipse.commands.scapsindexercommand"
               id="scaps.eclipse.scapsindexercommand">
+        </command>
+        <command
+              commandId="scaps.eclipse.commands.scapsprojectselectioncommand"
+              id="scaps.eclipse.scapsprojectselectioncommand">
         </command>
       </menuContribution>
    </extension>
