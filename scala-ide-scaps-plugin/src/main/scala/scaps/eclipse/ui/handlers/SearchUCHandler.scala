@@ -6,17 +6,16 @@ import scaps.eclipse.core.services.ScapsService
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import scaps.api.Result
 import scaps.api.ValueDef
+import scaps.eclipse.core.services.ScapsSearchService
 
 object SearchUCHandler extends AbstractUCHandler {
   def apply(): SearchUCHandler = {
-    new SearchUCHandler(ScapsService(SCAPS_INDEX_DIR))
+    new SearchUCHandler(ScapsService.SEARCH)
   }
 }
 
-class SearchUCHandler(private val scapsService: ScapsService) {
+class SearchUCHandler(private val scapsSearchService: ScapsSearchService) {
 
-  def apply(searchQuery: String): Seq[Result[ValueDef]] = {
-    scapsService.search(searchQuery)
-  }
+  def apply(searchQuery: String): Seq[Result[ValueDef]] = scapsSearchService(searchQuery)
 
 }

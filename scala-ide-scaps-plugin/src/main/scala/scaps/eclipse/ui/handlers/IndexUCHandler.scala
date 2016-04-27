@@ -1,33 +1,31 @@
 package scaps.eclipse.ui.handlers
 
-import org.eclipse.core.resources.ResourcesPlugin
-import org.eclipse.jdt.core.IJavaProject
-import scaps.eclipse.core.services.ScapsService
-import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.core.commands.ExecutionEvent
-import org.eclipse.ui.internal.WorkingSet
-import org.eclipse.jface.wizard.WizardDialog
-import org.eclipse.ui.PlatformUI
+import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.internal.ui.workingsets.IWorkingSetIDs
-import org.eclipse.ui.handlers.HandlerUtil
+import org.eclipse.jface.wizard.WizardDialog
 import org.eclipse.ui.IWorkingSet
-import org.eclipse.core.resources.IProject
-import org.eclipse.jdt.internal.core.JarPackageFragmentRoot
+import org.eclipse.ui.PlatformUI
+import org.eclipse.ui.handlers.HandlerUtil
+
 import com.typesafe.scalalogging.StrictLogging
+
+import scaps.eclipse.core.services.ScapsIndexService
+import scaps.eclipse.core.services.ScapsService
 
 object IndexUCHandler extends AbstractUCHandler {
   def apply(): IndexUCHandler = {
-    new IndexUCHandler(ScapsService(SCAPS_INDEX_DIR))
+    new IndexUCHandler(ScapsService.INDEXING)
   }
 }
 
-class IndexUCHandler(private val scapsService: ScapsService) extends AbstractUCHandler with StrictLogging {
+class IndexUCHandler(private val scapsIndexService: ScapsIndexService) extends AbstractUCHandler with StrictLogging {
 
   lazy val workingSetManager = PlatformUI.getWorkbench.getWorkingSetManager
 
   private def createIndex(): Unit = {
     val scapsWorkingSet = workingSetManager.getWorkingSet(SCAPS_WORKING_SET_NAME)
-    scapsService.index(scapsWorkingSet)
+    scapsIndexService(scapsWorkingSet)
   }
 
   def showProjectSelectionDialog(event: ExecutionEvent): IWorkingSet = {

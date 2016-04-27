@@ -11,10 +11,12 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-class Activator extends AbstractUIPlugin {
-  // The plug-in ID
-  val PLUGIN_ID = "test_plugin"
 
+object ScapsPlugin {
+  val PLUGIN_ID = "scala-ide-scaps-plugin"
+}
+
+class Activator extends AbstractUIPlugin {
   /*
    * (non-Javadoc)
    * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
@@ -48,7 +50,7 @@ class Activator extends AbstractUIPlugin {
    * @return the image descriptor
    */
   def getImageDescriptor(path: String) {
-    AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
+    AbstractUIPlugin.imageDescriptorFromPlugin(ScapsPlugin.PLUGIN_ID, path);
   }
 }
 

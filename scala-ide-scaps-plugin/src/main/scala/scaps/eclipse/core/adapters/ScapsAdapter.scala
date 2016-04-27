@@ -48,6 +48,8 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
     indexDefinitions(libraryExtractor(classPath)(librarySourceRootFile))
   }
 
+  def indexReset = searchEngine.resetIndexes
+
   def indexFinalize = searchEngine.finalizeIndex.get
 
   def search(searchQuery: String): Seq[Result[ValueDef]] = {
