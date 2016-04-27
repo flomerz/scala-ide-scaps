@@ -12,31 +12,27 @@ import org.eclipse.jdt.internal.ui.workingsets.IWorkingSetIDs
 import org.eclipse.ui.handlers.HandlerUtil
 import org.eclipse.ui.IWorkingSet
 import org.eclipse.core.resources.IProject
+import org.eclipse.jdt.internal.core.JarPackageFragmentRoot
+import com.typesafe.scalalogging.StrictLogging
 
 object IndexUCHandler extends AbstractUCHandler {
   def apply(): IndexUCHandler = {
-    new IndexUCHandler(ScapsService(_indexDir))
+    new IndexUCHandler(ScapsService(SCAPS_INDEX_DIR))
   }
 }
 
-class IndexUCHandler(private val scapsService: ScapsService) {
+class IndexUCHandler(private val scapsService: ScapsService) extends AbstractUCHandler with StrictLogging {
 
-  def apply(projects: Seq[IJavaProject]): Unit = {
-    projects.map { project =>
-      val resolvedClassPath = project.getResolvedClasspath(true)
+  lazy val workingSetManager = PlatformUI.getWorkbench.getWorkingSetManager
 
-      val classPath = resolvedClassPath.map(_.getPath.toString).toList
-      val librarySourceRootFiles = resolvedClassPath.filter(_.getSourceAttachmentPath != null).map(_.getSourceAttachmentPath.toFile)
-
-      val projectSourceFragmentRoots = project.getAllPackageFragmentRoots.filter(_.getKind == IPackageFragmentRoot.K_SOURCE)
-      scapsService.index(classPath, projectSourceFragmentRoots, librarySourceRootFiles)
-    }
+  private def createIndex(): Unit = {
+    val scapsWorkingSet = workingSetManager.getWorkingSet(SCAPS_WORKING_SET_NAME)
+    scapsService.index(scapsWorkingSet)
   }
 
   def showProjectSelectionDialog(event: ExecutionEvent): IWorkingSet = {
     val window = HandlerUtil.getActiveWorkbenchWindowChecked(event)
     val workingSetManager = PlatformUI.getWorkbench.getWorkingSetManager
-    val SCAPS_WORKING_SET_NAME = "ScapsWorkingSet"
     val scapsWorkingSet = Option(workingSetManager.getWorkingSet(SCAPS_WORKING_SET_NAME)).getOrElse {
       val newScapsWorkingSet = workingSetManager.createWorkingSet(SCAPS_WORKING_SET_NAME, Array())
       newScapsWorkingSet.setId(IWorkingSetIDs.JAVA)
@@ -55,7 +51,7 @@ class IndexUCHandler(private val scapsService: ScapsService) {
     val iProjects: Array[IJavaProject] = {
       elements.collect(_ match { case a: IJavaProject => a })
     }
-    apply(iProjects.toSeq)
+    createIndex
   }
 
 }

@@ -9,7 +9,7 @@ import scaps.api.ValueDef
 
 object SearchUCHandler extends AbstractUCHandler {
   def apply(): SearchUCHandler = {
-    new SearchUCHandler(ScapsService(_indexDir))
+    new SearchUCHandler(ScapsService(SCAPS_INDEX_DIR))
   }
 }
 
