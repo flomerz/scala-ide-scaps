@@ -23,7 +23,7 @@ class IndexUCHandler(private val scapsIndexService: ScapsIndexService) extends A
 
   lazy val workingSetManager = PlatformUI.getWorkbench.getWorkingSetManager
 
-  private def createIndex(): Unit = {
+  def createIndex(): Unit = {
     val scapsWorkingSet = workingSetManager.getWorkingSet(SCAPS_WORKING_SET_NAME)
     scapsIndexService(scapsWorkingSet)
   }
@@ -33,7 +33,7 @@ class IndexUCHandler(private val scapsIndexService: ScapsIndexService) extends A
     val workingSetManager = PlatformUI.getWorkbench.getWorkingSetManager
     val scapsWorkingSet = Option(workingSetManager.getWorkingSet(SCAPS_WORKING_SET_NAME)).getOrElse {
       val newScapsWorkingSet = workingSetManager.createWorkingSet(SCAPS_WORKING_SET_NAME, Array())
-      newScapsWorkingSet.setId(IWorkingSetIDs.JAVA)
+      newScapsWorkingSet.setId("scaps.eclipse.ui.view.workingset.ScapsWorkingSetPage")
       workingSetManager.addWorkingSet(newScapsWorkingSet)
       newScapsWorkingSet
     }
@@ -49,7 +49,6 @@ class IndexUCHandler(private val scapsIndexService: ScapsIndexService) extends A
     val iProjects: Array[IJavaProject] = {
       elements.collect(_ match { case a: IJavaProject => a })
     }
-    createIndex
   }
 
 }

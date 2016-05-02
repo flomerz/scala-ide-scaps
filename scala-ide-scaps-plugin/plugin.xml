@@ -30,7 +30,19 @@
          </action>
       </actionSet>
    </extension>
-   
+
+	<extension point="org.eclipse.ui.workingSets">
+		<workingSet
+			id="scaps.eclipse.ui.view.workingset.ScapsWorkingSetPage"
+			name="Scaps Working Set"
+			description="Contains projects and libraries witch will be indexed."
+			icon="icons/resworkset.gif"
+			pageClass="scaps.eclipse.ui.view.workingset.ScapsWorkingSetPage"
+			updaterClass="org.eclipse.jdt.internal.ui.workingsets.JavaWorkingSetUpdater"
+			elementAdapterClass="org.eclipse.jdt.internal.ui.workingsets.JavaWorkingSetElementAdapter">
+		</workingSet>
+	</extension>
+
    <extension point="org.eclipse.search.searchPages">
 	   <page id="scaps.eclipse.ui.view.search.ScapsSearchPage"
 			label="Scala Search"
