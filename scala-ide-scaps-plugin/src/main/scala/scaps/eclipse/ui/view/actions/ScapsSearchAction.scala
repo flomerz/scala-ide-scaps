@@ -6,11 +6,11 @@ import org.eclipse.search.internal.ui.SearchPlugin
 import org.eclipse.search.ui.NewSearchUI
 import org.eclipse.ui.IWorkbenchWindow
 import org.eclipse.ui.IWorkbenchWindowActionDelegate
+import scaps.eclipse.ScapsPlugin
 
-class ScalaSearchAction extends IWorkbenchWindowActionDelegate {
+class ScapsSearchAction extends IWorkbenchWindowActionDelegate {
 
   private var window: IWorkbenchWindow = _
-  private val pageID = "scaps.eclipse.ui.view.search.ScapsSearchPage"
 
   def init(window: IWorkbenchWindow) {
     this.window = window
@@ -22,7 +22,7 @@ class ScalaSearchAction extends IWorkbenchWindowActionDelegate {
       print("Run: Something is not good!")
       return
     }
-    NewSearchUI.openSearchDialog(window, pageID)
+    NewSearchUI.openSearchDialog(window, ScapsPlugin.SEARCH_PAGE)
   }
 
   def selectionChanged(action: IAction, selection: ISelection) {

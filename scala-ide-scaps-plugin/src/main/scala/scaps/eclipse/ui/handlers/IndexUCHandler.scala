@@ -1,39 +1,45 @@
 package scaps.eclipse.ui.handlers
 
-import org.eclipse.core.commands.ExecutionEvent
-import org.eclipse.jdt.core.IJavaProject
-import org.eclipse.jdt.internal.ui.workingsets.IWorkingSetIDs
+import org.eclipse.jface.dialogs.MessageDialog
 import org.eclipse.jface.wizard.WizardDialog
+import org.eclipse.ui.IWorkbenchWindow
 import org.eclipse.ui.IWorkingSet
 import org.eclipse.ui.PlatformUI
-import org.eclipse.ui.handlers.HandlerUtil
 
 import com.typesafe.scalalogging.StrictLogging
 
+import scaps.eclipse.ScapsPlugin
 import scaps.eclipse.core.services.ScapsIndexService
 import scaps.eclipse.core.services.ScapsService
 
-object IndexUCHandler extends AbstractUCHandler {
-  def apply(): IndexUCHandler = {
-    new IndexUCHandler(ScapsService.INDEXING)
-  }
+object IndexUCHandler {
+  private lazy val INSTANCE = new IndexUCHandler(ScapsService.INDEXING)
+  def apply(): IndexUCHandler = INSTANCE
 }
 
-class IndexUCHandler(private val scapsIndexService: ScapsIndexService) extends AbstractUCHandler with StrictLogging {
+class IndexUCHandler(private val scapsIndexService: ScapsIndexService) extends StrictLogging {
 
   lazy val workingSetManager = PlatformUI.getWorkbench.getWorkingSetManager
 
-  def createIndex(): Unit = {
-    val scapsWorkingSet = workingSetManager.getWorkingSet(SCAPS_WORKING_SET_NAME)
-    scapsIndexService(scapsWorkingSet)
+  def runIndexer(window: IWorkbenchWindow): Unit = {
+    if (ScapsService.isIndexerRunning) {
+      MessageDialog.openInformation(window.getShell(),
+        "Scaps Indexer",
+        "The Scaps Indexer is already running, please wait until it's done.");
+    } else {
+      val scapsWorkingSet = Option(workingSetManager.getWorkingSet(ScapsPlugin.WORKING_SET_NAME))
+      if (scapsWorkingSet.isEmpty) {
+        configureIndexer(window)
+      } else {
+        scapsIndexService(scapsWorkingSet.get)
+      }
+    }
   }
 
-  def showProjectSelectionDialog(event: ExecutionEvent): IWorkingSet = {
-    val window = HandlerUtil.getActiveWorkbenchWindowChecked(event)
-    val workingSetManager = PlatformUI.getWorkbench.getWorkingSetManager
-    val scapsWorkingSet = Option(workingSetManager.getWorkingSet(SCAPS_WORKING_SET_NAME)).getOrElse {
-      val newScapsWorkingSet = workingSetManager.createWorkingSet(SCAPS_WORKING_SET_NAME, Array())
-      newScapsWorkingSet.setId("scaps.eclipse.ui.view.workingset.ScapsWorkingSetPage")
+  def configureIndexer(window: IWorkbenchWindow): IWorkingSet = {
+    val scapsWorkingSet = Option(workingSetManager.getWorkingSet(ScapsPlugin.WORKING_SET_NAME)).getOrElse {
+      val newScapsWorkingSet = workingSetManager.createWorkingSet(ScapsPlugin.WORKING_SET_NAME, Array())
+      newScapsWorkingSet.setId(ScapsPlugin.WORKING_SET_PAGE)
       workingSetManager.addWorkingSet(newScapsWorkingSet)
       newScapsWorkingSet
     }
@@ -42,13 +48,6 @@ class IndexUCHandler(private val scapsIndexService: ScapsIndexService) extends A
     dialog.create()
     dialog.open()
     scapsWorkingSet
-  }
-
-  def selectIProjects(workingSet: IWorkingSet): Unit = {
-    val elements = workingSet.getElements
-    val iProjects: Array[IJavaProject] = {
-      elements.collect(_ match { case a: IJavaProject => a })
-    }
   }
 
 }

@@ -6,8 +6,8 @@ import org.eclipse.jdt.ui.StandardJavaElementContentProvider
 import org.eclipse.jface.viewers.TreeViewer
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Text
-
 import scaps.eclipse.ui.handlers.IndexUCHandler
+import org.eclipse.ui.PlatformUI
 
 class ScapsWorkingSetPage extends JavaWorkingSetPage {
 
@@ -31,7 +31,7 @@ class ScapsWorkingSetPage extends JavaWorkingSetPage {
 
   override def finish(): Unit = {
     super.finish
-    IndexUCHandler().createIndex
+    IndexUCHandler().runIndexer(PlatformUI.getWorkbench.getActiveWorkbenchWindow)
   }
 
 }

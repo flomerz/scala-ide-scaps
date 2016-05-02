@@ -2,15 +2,16 @@ package scaps.eclipse.ui.view.handlers
 
 import org.eclipse.core.commands.AbstractHandler
 import org.eclipse.core.commands.ExecutionEvent
-
+import org.eclipse.ui.PlatformUI
 import scaps.eclipse.ui.handlers.IndexUCHandler
+import org.eclipse.ui.handlers.HandlerUtil
 
-class ProjectSelectionHandler extends AbstractHandler {
+class ScapsRunIndexerHandler extends AbstractHandler {
 
   def execute(event: ExecutionEvent): Object = {
-    val workingSet = IndexUCHandler().showProjectSelectionDialog(event)
-    //    TODO: Bei cancel Button darf nicht indexiert werden!
-    IndexUCHandler().selectIProjects(workingSet)
+    val window = HandlerUtil.getActiveWorkbenchWindowChecked(event)
+    IndexUCHandler().runIndexer(window)
     null
   }
+
 }

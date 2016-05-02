@@ -21,10 +21,10 @@
                 <separator name="extraSearchGroup"/> <!-- to be used by clients -->
          </menu>
          <action
-               class="scaps.eclipse.ui.view.actions.ScalaSearchAction"
+               class="scaps.eclipse.ui.view.actions.ScapsSearchAction"
                enablesFor="*"
          	   id="ScapsEclipse.OpenScapsSearch"
-    		   label="Scaps Search"
+    		   label="Scaps..."
                menubarPath="org.eclipse.search.menu/dialogGroup"
                style="push">
          </action>
@@ -45,7 +45,7 @@
 
    <extension point="org.eclipse.search.searchPages">
 	   <page id="scaps.eclipse.ui.view.search.ScapsSearchPage"
-			label="Scala Search"
+			label="Scaps Search"
 			sizeHint="460,160"
 			extensions="java:90, jav:90"
 			showScopeSection="false"
@@ -63,63 +63,58 @@
 
    <extension point="org.eclipse.ui.commands">
       <category
-            name="Scala Search"
-            id="scaps.eclipse.commands.category">
+            name="Scaps Category"
+            id="scaps.eclipse.ui.view.commands.category">
       </category>
       <command
             name="Scaps Assistant"
-            categoryId="scaps.eclipse.commands.category"
-            id="scaps.eclipse.commands.scapsassistantcommand">
+            categoryId="scaps.eclipse.ui.view.commands.category"
+            id="scaps.eclipse.ui.view.commands.assistant">
       </command>
+	  <!-- UNUSED command whitch opens the scaps search page 
       <command
-            name="Scaps Search"
-            categoryId="scaps.eclipse.commands.category"
-            id="scaps.eclipse.commands.scapssearchcommand">
+            name="Scaps.."
+            categoryId="scaps.eclipse.ui.view.commands.category"
+            id="scaps.eclipse.ui.view.commands.scapssearchcommand">
       </command>
+      -->
+      <!-- command whitch directly starts the scaps indexing, if the ScapsWorkingSet exists -->
       <command
-            name="Scaps Indexer"
-            categoryId="scaps.eclipse.commands.category"
-            id="scaps.eclipse.commands.scapsindexercommand">
+            name="Scaps Run Indexer"
+            categoryId="scaps.eclipse.ui.view.commands.category"
+            id="scaps.eclipse.ui.view.commands.indexer.run">
       </command>
+      <!-- command whitch opens the scaps working set edit page-->
       <command
-            name="Scaps Project Selection"
-            categoryId="scaps.eclipse.commands.category"
-            id="scaps.eclipse.commands.scapsprojectselectioncommand">
+            name="Scaps Configure Indexer..."
+            categoryId="scaps.eclipse.ui.view.commands.category"
+            id="scaps.eclipse.ui.view.commands.indexer.configure">
       </command>
    </extension>
    
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            commandId="scaps.eclipse.commands.scapsassistantcommand"
+            commandId="scaps.eclipse.ui.view.commands.assistant"
             class="scaps.eclipse.ui.view.handlers.ScapsAssistantHandler">
       </handler>
       <handler
-            commandId="scaps.eclipse.commands.scapsindexercommand"
-            class="scaps.eclipse.ui.view.handlers.IndexHandler">
+            commandId="scaps.eclipse.ui.view.commands.indexer.run"
+            class="scaps.eclipse.ui.view.handlers.ScapsRunIndexerHandler">
       </handler>
       <handler
-            commandId="scaps.eclipse.commands.scapsprojectselectioncommand"
-            class="scaps.eclipse.ui.view.handlers.ProjectSelectionHandler">
+            commandId="scaps.eclipse.ui.view.commands.indexer.configure"
+            class="scaps.eclipse.ui.view.handlers.ScapsConfigureIndexerHandler">
       </handler>
    </extension>
    
    <extension point="org.eclipse.ui.menus">
       <menuContribution locationURI="menu:edit?after=additions">
-       	<command
-              commandId="scaps.eclipse.commands.scapsassistantcommand"
-              id="scaps.eclipse.scapsassistantcommand">
-        </command>
+       	<command commandId="scaps.eclipse.ui.view.commands.assistant" />
       </menuContribution>
       <menuContribution locationURI="menu:project?after=additions">
-       	<command
-              commandId="scaps.eclipse.commands.scapsindexercommand"
-              id="scaps.eclipse.scapsindexercommand">
-        </command>
-        <command
-              commandId="scaps.eclipse.commands.scapsprojectselectioncommand"
-              id="scaps.eclipse.scapsprojectselectioncommand">
-        </command>
+       	<command commandId="scaps.eclipse.ui.view.commands.indexer.configure" />
+        <command commandId="scaps.eclipse.ui.view.commands.indexer.run" />
       </menuContribution>
    </extension>
    

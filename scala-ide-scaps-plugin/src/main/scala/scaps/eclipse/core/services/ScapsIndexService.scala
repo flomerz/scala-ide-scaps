@@ -20,16 +20,19 @@ import scaps.eclipse.util.Util
 class ScapsIndexService(private val scapsAdapter: ScapsAdapter) extends StrictLogging {
 
   def apply(scapsWorkingSet: IWorkingSet): Unit = {
-    val (classPath, projectSourceFragmentRoots, librarySourceRootFiles) = extractElements(scapsWorkingSet)
+    ScapsService.setIndexerRunning(true)
 
-    new Job("Scaps Indexing") {
+    new Job("Scaps Indexer") {
       def run(monitor: IProgressMonitor): IStatus = {
         val subMonitor = SubMonitor.convert(monitor, 3)
+        monitor.setTaskName("Collect Elements")
+        val (classPath, projectSourceFragmentRoots, librarySourceRootFiles) = extractElements(scapsWorkingSet)
         scapsAdapter.indexReset
         Util.logTime(logger.info(_), "indexing libraries", indexLibrariesTask(subMonitor.newChild(1), classPath, librarySourceRootFiles))
         Util.logTime(logger.info(_), "indexing project sources", indexProjectTask(subMonitor.newChild(1), classPath, projectSourceFragmentRoots))
         Util.logTime(logger.info(_), "index finalize", indexFinalize(subMonitor.newChild(1)))
         ScapsService.swapIndexDirs
+        ScapsService.setIndexerRunning(false)
         Status.OK_STATUS
       }
     }.schedule
@@ -96,7 +99,7 @@ class ScapsIndexService(private val scapsAdapter: ScapsAdapter) extends StrictLo
 
   private def indexLibrariesTask(monitor: IProgressMonitor, classPath: List[String], librarySourceRootFiles: List[File]): Unit = {
     def indexLibraryTask(monitor: IProgressMonitor, librarySourceRootFile: File): Unit = {
-      monitor.setTaskName(librarySourceRootFile.getName)
+      monitor.setTaskName("Library: " + librarySourceRootFile.getPath)
       scapsAdapter.indexLibrary(classPath, librarySourceRootFile)
     }
 

@@ -25,7 +25,9 @@ import org.eclipse.core.resources.ResourcesPlugin
 object ScapsService {
 
   val pluginPreferences = InstanceScope.INSTANCE.getNode(ScapsPlugin.PLUGIN_ID)
-  val indexRootDir = ResourcesPlugin.getWorkspace.getRoot.getLocation.toString + "/.metadata/scaps/"
+  val indexRootDir = ResourcesPlugin.getWorkspace.getRoot.getLocation.toString + ScapsPlugin.INDEX_RELATIVE_ROOT_DIR
+
+  val PROPERTY_INDEXER_RUNNING = "indexRunning"
 
   val PROPERTY_SEARCH_ON_FIRST_INDEX = "searchOnFirstIndex"
   val FIRST_INDEX_DIR = "first"
@@ -39,6 +41,15 @@ object ScapsService {
     val searchOnFirstIndex = pluginPreferences.getBoolean(PROPERTY_SEARCH_ON_FIRST_INDEX, true)
     pluginPreferences.putBoolean(PROPERTY_SEARCH_ON_FIRST_INDEX, !searchOnFirstIndex)
     pluginPreferences.flush
+  }
+
+  def setIndexerRunning(running: Boolean): Unit = {
+    pluginPreferences.putBoolean(PROPERTY_INDEXER_RUNNING, running)
+    pluginPreferences.flush
+  }
+
+  def isIndexerRunning: Boolean = {
+    pluginPreferences.getBoolean(PROPERTY_INDEXER_RUNNING, false)
   }
 
   def SEARCH = {

@@ -4,17 +4,14 @@
 
 package scaps.eclipse;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.jface.resource.ImageDescriptor
+import org.eclipse.ui.plugin.AbstractUIPlugin
 import org.osgi.framework.BundleContext;
+import scaps.eclipse.core.services.ScapsService
 
 /**
  * The activator class controls the plug-in life cycle
  */
-
-object ScapsPlugin {
-  val PLUGIN_ID = "scala-ide-scaps-plugin"
-}
 
 class Activator extends AbstractUIPlugin {
   /*
@@ -24,6 +21,7 @@ class Activator extends AbstractUIPlugin {
   override def start(context: BundleContext) {
     super.start(context);
     Activator.plugin = this;
+    ScapsService.setIndexerRunning(false)
   }
 
   /*

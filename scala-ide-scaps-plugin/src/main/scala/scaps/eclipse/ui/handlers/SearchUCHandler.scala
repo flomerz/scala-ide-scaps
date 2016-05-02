@@ -8,10 +8,9 @@ import scaps.api.Result
 import scaps.api.ValueDef
 import scaps.eclipse.core.services.ScapsSearchService
 
-object SearchUCHandler extends AbstractUCHandler {
-  def apply(): SearchUCHandler = {
-    new SearchUCHandler(ScapsService.SEARCH)
-  }
+object SearchUCHandler {
+  private lazy val INSTANCE = new SearchUCHandler(ScapsService.SEARCH)
+  def apply(): SearchUCHandler = INSTANCE
 }
 
 class SearchUCHandler(private val scapsSearchService: ScapsSearchService) {
