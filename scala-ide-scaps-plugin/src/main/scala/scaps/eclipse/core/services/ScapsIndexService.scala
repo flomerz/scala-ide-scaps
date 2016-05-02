@@ -38,7 +38,7 @@ class ScapsIndexService(private val scapsAdapter: ScapsAdapter) extends StrictLo
     }.schedule
   }
 
-  private def extractElements(scapsWorkingSet: IWorkingSet): (List[String], List[IPackageFragmentRoot], List[File]) = {
+  private[services] def extractElements(scapsWorkingSet: IWorkingSet): (List[String], List[IPackageFragmentRoot], List[File]) = {
     def extractClassPath(javaProject: IJavaProject): List[String] = {
       val resolvedClassPath = javaProject.getResolvedClasspath(true)
       resolvedClassPath.map(_.getPath.toString).toList
