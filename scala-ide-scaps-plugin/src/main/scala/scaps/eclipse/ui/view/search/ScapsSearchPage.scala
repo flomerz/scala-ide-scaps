@@ -44,7 +44,7 @@ class ScapsSearchPage extends DialogPage with ISearchPage with StrictLogging {
       }
 
       def focusLost(focus: FocusEvent) {
-        if (inputText.equals("")) {
+        if (inputText.getText.equals("")) {
           inputText.setText("Search for functions, methods and values...")
         }
       }
