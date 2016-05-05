@@ -113,6 +113,7 @@
        	<command commandId="scaps.eclipse.ui.view.commands.assistant" />
       </menuContribution>
       <menuContribution locationURI="menu:project?after=additions">
+		<separator name="separator-id" visible="true" />
        	<command commandId="scaps.eclipse.ui.view.commands.indexer.configure" />
         <command commandId="scaps.eclipse.ui.view.commands.indexer.run" />
       </menuContribution>
