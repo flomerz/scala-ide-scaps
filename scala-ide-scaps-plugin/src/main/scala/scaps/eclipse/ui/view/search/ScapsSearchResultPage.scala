@@ -21,11 +21,23 @@ import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Status
 import org.eclipse.jface.viewers.StyledCellLabelProvider
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport
+import org.eclipse.jface.viewers.IContentProvider
+import org.eclipse.jface.viewers.Viewer
+import org.eclipse.jface.viewers.ITreeContentProvider
 
 class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLogging {
 
   private val contentProvider = new ScapsSearchResultContentProvider(this)
   private val labelProvider = new ScapsSearchResultLabelProvider()
+
+  private val treeContentProvider = new ITreeContentProvider() {
+    def dispose(): Unit = {}
+    def inputChanged(viewer: Viewer, x: Any, y: Any): Unit = {}
+    def getChildren(x$1: Any): Array[Object] = Array()
+    def getElements(x$1: Any): Array[Object] = Array()
+    def getParent(x$1: Any): Object = null
+    def hasChildren(x$1: Any): Boolean = false
+  }
 
   private val scapsQueryListener = new IQueryListener() {
     def queryAdded(query: ISearchQuery): Unit = {}
@@ -65,7 +77,7 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
   }
 
   def configureTreeViewer(treeViewer: TreeViewer): Unit = {
-    logger.error("tree view not supported!")
+    treeViewer.setContentProvider(treeContentProvider)
   }
 
   def elementsChanged(elements: Array[Object]): Unit = {}
