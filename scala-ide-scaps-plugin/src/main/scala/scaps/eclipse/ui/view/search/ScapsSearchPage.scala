@@ -34,22 +34,11 @@ class ScapsSearchPage extends DialogPage with ISearchPage with StrictLogging {
     val layout = new GridLayout(1, false)
     result.setLayout(layout)
 
+    val searchTitleLabel = new Label(result, SWT.NONE)
+    searchTitleLabel.setText("Search string:")
+
     inputText = new Text(result, SWT.BORDER)
     inputText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
-    inputText.setText("Search for functions, methods and values...")
-    inputText.addFocusListener(new FocusListener {
-
-      def focusGained(focus: FocusEvent) {
-        inputText.setText("")
-      }
-
-      def focusLost(focus: FocusEvent) {
-        if (inputText.getText.equals("")) {
-          inputText.setText("Search for functions, methods and values...")
-        }
-      }
-
-    })
 
     val exampleQueriesLabel = new Label(result, SWT.NONE)
     exampleQueriesLabel.setText("Example Queries")
