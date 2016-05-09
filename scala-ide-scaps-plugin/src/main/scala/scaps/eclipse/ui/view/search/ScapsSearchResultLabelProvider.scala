@@ -10,6 +10,8 @@ import org.scalaide.ui.ScalaImages
 import org.eclipse.swt.graphics.Point
 import scaps.api.Result
 import scaps.api.ValueDef
+import scala.xml.XML
+import sun.awt.X11.InfoWindow.Tooltip
 
 /**
  * Responsible for telling Eclipse how to render the results in the
@@ -27,9 +29,12 @@ class ScapsSearchResultLabelProvider extends StyledCellLabelProvider with Strict
   override def getToolTipTimeDisplayed(obj: Any): Int = 5000
 
   override def getToolTipText(element: Any): String = {
+    def removeHTMLTags(string: String): String = XML.loadString("<html>" + string + "</html>").text
     element match {
       case result: Result[ValueDef] =>
-        result.explanation.get
+        val comment = result.entity.comment
+        val attributes = comment.attributes.map { x => x._1 + ":\n" + x._2 }.mkString("\n\n")
+        removeHTMLTags(comment.body + "\n\n" + attributes)
       case _ => ""
     }
   }
