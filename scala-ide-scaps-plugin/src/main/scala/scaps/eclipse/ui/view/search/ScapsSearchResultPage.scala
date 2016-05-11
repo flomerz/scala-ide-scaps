@@ -1,29 +1,29 @@
 package scaps.eclipse.ui.view.search
 
+import org.eclipse.core.internal.resources.File
+import org.eclipse.core.internal.resources.Workspace
+import org.eclipse.core.resources.IResource
+import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.core.runtime.IStatus
+import org.eclipse.core.runtime.Path
+import org.eclipse.core.runtime.Status
+import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport
+import org.eclipse.jface.viewers.IStructuredSelection
+import org.eclipse.jface.viewers.ITreeContentProvider
 import org.eclipse.jface.viewers.OpenEvent
-import org.eclipse.jface.viewers.StructuredViewer
 import org.eclipse.jface.viewers.TableViewer
 import org.eclipse.jface.viewers.TreeViewer
-import org.eclipse.search.ui.text.AbstractTextSearchViewPage
-import org.scalaide.ui.editor.InteractiveCompilationUnitEditor
-import org.eclipse.jdt.internal.ui.search.JavaSearchResultPage
-import com.typesafe.scalalogging.StrictLogging
-import org.eclipse.search.ui.ISearchResult
-import javax.swing.text.html.TableView
-import org.eclipse.swt.widgets.Composite
-import org.eclipse.search.ui.NewSearchUI
+import org.eclipse.jface.viewers.Viewer
 import org.eclipse.search.ui.IQueryListener
 import org.eclipse.search.ui.ISearchQuery
+import org.eclipse.search.ui.NewSearchUI
+import org.eclipse.search.ui.text.AbstractTextSearchViewPage
+import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.progress.UIJob
-import org.eclipse.core.runtime.IProgressMonitor
-import org.eclipse.search.ui.text.AbstractTextSearchResult
-import org.eclipse.core.runtime.IStatus
-import org.eclipse.core.runtime.Status
-import org.eclipse.jface.viewers.StyledCellLabelProvider
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport
-import org.eclipse.jface.viewers.IContentProvider
-import org.eclipse.jface.viewers.Viewer
-import org.eclipse.jface.viewers.ITreeContentProvider
+
+import com.typesafe.scalalogging.StrictLogging
 
 class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLogging {
 
@@ -82,6 +82,17 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
 
   def elementsChanged(elements: Array[Object]): Unit = {}
 
-  override protected def handleOpen(event: OpenEvent): Unit = {}
+  override protected def handleOpen(event: OpenEvent): Unit = {
+    val selection: IStructuredSelection = event.getSelection.asInstanceOf[IStructuredSelection]
+    val tableviewer: TableViewer = event.getSource().asInstanceOf[TableViewer]
+    val tableItem = tableviewer.getTable.getItem(tableviewer.getTable.getSelectionIndex)
+    val resultString = tableItem.getText
+    // TODO: extract path out of result
+    //    val pathS = resultString.split("").apply(0)
+    val path = new Path("EclipseScapsPlugin/src/TestFile/testFile.scala" /*pathS*/ )
+    val container: Workspace = ResourcesPlugin.getWorkspace.asInstanceOf[Workspace]
+    val gk = container.newResource(path, IResource.FILE).asInstanceOf[File]
+    val editor = EditorUtility.openInEditor(gk, true)
+  }
 
 }
