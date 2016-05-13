@@ -14,6 +14,7 @@ class ScapsSearchResultContentProvider(page: ScapsSearchResultPage) extends IStr
   override def getElements(inputElement: Object): Array[Object] = {
     inputElement match {
       case scapsQuery: ScapsSearchQuery =>
+        //        scapsQuery.result.data.foreach { x => resultObject += x.entity.docLink.head + x.entity.module.name + x.entity.name + x.score }
         scapsQuery.result.data.toArray
       case _ =>
         Array()
