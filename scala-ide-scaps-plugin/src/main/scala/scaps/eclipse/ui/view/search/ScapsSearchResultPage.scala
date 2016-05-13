@@ -22,8 +22,8 @@ import org.eclipse.search.ui.NewSearchUI
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.progress.UIJob
-
 import com.typesafe.scalalogging.StrictLogging
+import org.eclipse.core.internal.registry.TableWriter
 
 class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLogging {
 
@@ -83,16 +83,18 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
   def elementsChanged(elements: Array[Object]): Unit = {}
 
   override protected def handleOpen(event: OpenEvent): Unit = {
-    val selection: IStructuredSelection = event.getSelection.asInstanceOf[IStructuredSelection]
-    val tableviewer: TableViewer = event.getSource().asInstanceOf[TableViewer]
-    val tableItem = tableviewer.getTable.getItem(tableviewer.getTable.getSelectionIndex)
-    val resultString = tableItem.getText
-    // TODO: extract path out of result
-    //    val pathS = resultString.split("").apply(0)
-    val path = new Path("EclipseScapsPlugin/src/TestFile/testFile.scala" /*pathS*/ )
-    val container: Workspace = ResourcesPlugin.getWorkspace.asInstanceOf[Workspace]
-    val gk = container.newResource(path, IResource.FILE).asInstanceOf[File]
-    val editor = EditorUtility.openInEditor(gk, true)
+    event.getSource match {
+      case tableViewer: TableViewer =>
+        val tableItem = tableViewer.getTable.getItem(tableViewer.getTable.getSelectionIndex)
+        val resultString = tableItem.getText
+        // TODO: extract path out of result
+        //    val pathS = resultString.split("").apply(0)
+        val path = new Path("EclipseScapsPlugin/src/TestFile/testFile.scala" /*pathS*/ )
+        val container: Workspace = ResourcesPlugin.getWorkspace.asInstanceOf[Workspace]
+        val gk = container.newResource(path, IResource.FILE).asInstanceOf[File]
+        val editor = EditorUtility.openInEditor(gk, true)
+      case _ =>
+    }
   }
 
 }
