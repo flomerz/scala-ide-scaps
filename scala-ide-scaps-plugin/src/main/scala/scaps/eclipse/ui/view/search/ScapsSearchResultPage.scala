@@ -11,9 +11,12 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Path
 import org.eclipse.core.runtime.Status
+import org.eclipse.jface.dialogs.PopupDialog
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport
+import org.eclipse.jface.viewers.ISelectionChangedListener
 import org.eclipse.jface.viewers.ITreeContentProvider
 import org.eclipse.jface.viewers.OpenEvent
+import org.eclipse.jface.viewers.SelectionChangedEvent
 import org.eclipse.jface.viewers.TableViewer
 import org.eclipse.jface.viewers.TreeViewer
 import org.eclipse.jface.viewers.Viewer
@@ -27,11 +30,30 @@ import org.eclipse.ui.ide.IDE
 import org.eclipse.ui.progress.UIJob
 
 import com.typesafe.scalalogging.StrictLogging
+import org.eclipse.swt.widgets.Shell
+import org.eclipse.swt.layout.GridData
+import org.eclipse.swt.events.FocusAdapter
+import org.eclipse.swt.widgets.Control
+import org.eclipse.swt.SWT
+import org.eclipse.swt.widgets.Text
+import org.eclipse.swt.events.FocusEvent
+import org.eclipse.swt.browser.Browser
+import org.eclipse.jface.viewers.StructuredSelection
+import org.eclipse.swt.graphics.Color
+import scaps.api.Result
+import scaps.api.ValueDef
+import org.eclipse.jface.layout.GridDataFactory
 
 class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLogging {
 
   private val contentProvider = new ScapsSearchResultContentProvider(this)
   private val labelProvider = new ScapsSearchResultLabelProvider()
+
+  private def scapsDocProvider(result: Result[ValueDef]) = {
+    val backgroundColor = getControl.getDisplay.getSystemColor(SWT.COLOR_INFO_BACKGROUND)
+    val foregroundColor = getControl.getDisplay.getSystemColor(SWT.COLOR_INFO_FOREGROUND);
+    labelProvider.getScapsDocHTML(backgroundColor, foregroundColor)(result)
+  }
 
   private val treeContentProvider = new ITreeContentProvider() {
     def dispose(): Unit = {}
@@ -64,6 +86,20 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
     }
   }.schedule
 
+  private class ScapsDocPopupDialog(parent: Shell, htmlText: String) extends PopupDialog(parent, PopupDialog.HOVER_SHELLSTYLE, true, false, false, false, false, null, null) {
+    private lazy val gridDataFactory = GridDataFactory
+      .createFrom(new GridData(GridData.BEGINNING | GridData.FILL_BOTH))
+      .indent(PopupDialog.POPUP_HORIZONTALSPACING, PopupDialog.POPUP_VERTICALSPACING)
+      .minSize(600, 300)
+
+    override def createDialogArea(parent: Composite): Control = {
+      val browser = new Browser(parent, SWT.NONE)
+      gridDataFactory.applyTo(browser)
+      browser.setText(htmlText)
+      browser
+    }
+  }
+
   override def createControl(composite: Composite): Unit = {
     super.createControl(composite)
     setLayout(AbstractTextSearchViewPage.FLAG_LAYOUT_FLAT)
@@ -76,7 +112,19 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
     logger.info("configure search result table viewer")
     tableViewer.setContentProvider(contentProvider)
     tableViewer.setLabelProvider(labelProvider)
-    ColumnViewerToolTipSupport.enableFor(tableViewer)
+
+    tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+      def selectionChanged(event: SelectionChangedEvent): Unit = {
+        for {
+          selection <- Option(event.getSelection).collect { case s: StructuredSelection => s }
+          result <- Option(selection.getFirstElement).collect { case r: Result[ValueDef @unchecked] => r }
+        } {
+          val shell = tableViewer.getControl.getShell
+          val scapsDocHTML = scapsDocProvider(result)
+          new ScapsDocPopupDialog(shell, scapsDocHTML).open()
+        }
+      }
+    })
   }
 
   def configureTreeViewer(treeViewer: TreeViewer): Unit = {

@@ -12,6 +12,8 @@ import scaps.api.Result
 import scaps.api.ValueDef
 import scala.xml.XML
 import sun.awt.X11.InfoWindow.Tooltip
+import org.eclipse.swt.SWT
+import org.eclipse.swt.graphics.Color
 
 /**
  * Responsible for telling Eclipse how to render the results in the
@@ -22,28 +24,61 @@ class ScapsSearchResultLabelProvider extends StyledCellLabelProvider with Strict
   private final val HIGHLIGHT_COLOR_NAME = "org.scala.tools.eclipse.search"
   JFaceResources.getColorRegistry().put(HIGHLIGHT_COLOR_NAME, new RGB(206, 204, 247));
 
-  override def getToolTipShift(obj: Any): Point = new Point(5, 5)
+  private object ScapsDocGenerator {
+    implicit class WebColor(color: Color) {
+      val toRGBCode: String = {
+        val r = color.getRed
+        val g = color.getGreen
+        val b = color.getBlue
+        f"#$r%02X$g%02X$b%02X"
+      }
+    }
 
-  override def getToolTipDisplayDelayTime(obj: Any): Int = 100
+    private def createCSSStyle(backgroundRGBCode: String, foregroundRGBCode: String): String = s"""
+        body {
+          background-color: $backgroundRGBCode;
+          color: $foregroundRGBCode;
+          font-size: 14px;
+        }
+        p { margin: 0px; }
+        .description { margin-top: 10px; }
+        .attribute {
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        .attributeBody dt { float: left;}
+        .attributeBody dl { margin: 0px; }
+      """
 
-  override def getToolTipTimeDisplayed(obj: Any): Int = 5000
+    private def createHTML(cssStyle: String, body: String): String =
+      s"""<html><head><style>$cssStyle</style></head><body>$body</body></html>"""
 
-  override def getToolTipText(element: Any): String = {
-    def removeHTMLTags(string: String): String = XML.loadString("<html>" + string + "</html>").text
-    element match {
-      case result: Result[ValueDef] =>
-        val comment = result.entity.comment
-        val attributes = comment.attributes.map { x => x._1 + ":\n" + x._2 }.mkString("\n\n")
-        removeHTMLTags(comment.body + "\n\n" + attributes)
-      case _ => ""
+    private def createBody(description: String, attributes: String): String =
+      s"""<div class="description">$description</div>$attributes"""
+
+    private def createAttributes(attributes: Seq[(String, String)]): String = attributes.map {
+      case (attribute, body) => s"""<div class="attribute">$attribute</div><div class="attributeBody">$body</div>"""
+    }.mkString
+
+    def apply(backgroundColor: Color, foregroundColor: Color, result: Result[ValueDef]): String = {
+      val comment = result.entity.comment
+      createHTML(
+        createCSSStyle(backgroundColor.toRGBCode, foregroundColor.toRGBCode),
+        createBody(
+          comment.body,
+          createAttributes(comment.attributes)))
     }
   }
+
+  def getScapsDocHTML(backgroundColor: Color, foregroundColor: Color)(result: Result[ValueDef]): String =
+    ScapsDocGenerator(backgroundColor, foregroundColor, result)
 
   override def update(cell: ViewerCell): Unit = {
     val text = new StyledString
 
     cell.getElement match {
-      case result: Result[ValueDef] =>
+      case result: Result[ValueDef @unchecked] =>
         cell.setImage(ScalaImages.SCALA_FILE.createImage)
         text.append(result.entity.name)
         text append " - "
