@@ -16,12 +16,12 @@
 		<dependency>
 			<groupId>org.scala-search</groupId>
 			<artifactId>scaps-core_2.11</artifactId>
-			<version>0.4</version>
+			<version>0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-search</groupId>
 			<artifactId>scaps-scala_2.11</artifactId>
-			<version>0.4</version>
+			<version>0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>

@@ -14,14 +14,17 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide;bundle-version="3.10.2",
  org.scala-ide.sdt.core;bundle-version="4.3.0",
  org.eclipse.jdt.ui;bundle-version="3.10.2",
- org.eclipse.jdt;bundle-version="3.10.1"
+ org.eclipse.jdt;bundle-version="3.10.1",
+ org.eclipse.jface.text;bundle-version="3.9.2"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: target/libs/async-http-client-1.8.10.jar,
+Bundle-ClassPath: .,
+ target/libs/async-http-client-1.8.10.jar,
  target/libs/autowire_2.11-0.2.5.jar,
  target/libs/config-1.2.0.jar,
+ target/libs/derive_2.11-0.3.8.jar,
  target/libs/dispatch-core_2.11-0.11.2.jar,
- target/libs/jawn-parser_2.11-0.7.0.jar,
+ target/libs/jawn-parser_2.11-0.8.3.jar,
  target/libs/logback-classic-1.1.3.jar,
  target/libs/logback-core-1.1.3.jar,
  target/libs/lucene-analyzers-common-4.10.4.jar,
@@ -35,10 +38,9 @@ Bundle-ClassPath: target/libs/async-http-client-1.8.10.jar,
  target/libs/scala-reflect-2.11.7.jar,
  target/libs/scala-xml_2.11-1.0.2.jar,
  target/libs/scalaz-core_2.11-7.1.1.jar,
- target/libs/scaps-api_2.11-0.4.jar,
- target/libs/scaps-core_2.11-0.4.jar,
- target/libs/scaps-scala_2.11-0.4.jar,
+ target/libs/scaps-api_2.11-0.5.jar,
+ target/libs/scaps-core_2.11-0.5.jar,
+ target/libs/scaps-scala_2.11-0.5.jar,
  target/libs/slf4j-api-1.7.7.jar,
- target/libs/upickle_2.11-0.2.6.jar,
- .
+ target/libs/upickle_2.11-0.3.8.jar
 Import-Package: org.eclipse.jdt.internal.ui.workingsets
