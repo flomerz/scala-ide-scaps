@@ -49,10 +49,10 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
   private val contentProvider = new ScapsSearchResultContentProvider(this)
   private val labelProvider = new ScapsSearchResultLabelProvider()
 
-  private def scapsDocProvider(result: Result[ValueDef]) = {
+  private lazy val scapsDocProvider = {
     val backgroundColor = getControl.getDisplay.getSystemColor(SWT.COLOR_INFO_BACKGROUND)
-    val foregroundColor = getControl.getDisplay.getSystemColor(SWT.COLOR_INFO_FOREGROUND);
-    labelProvider.getScapsDocHTML(backgroundColor, foregroundColor)(result)
+    val foregroundColor = getControl.getDisplay.getSystemColor(SWT.COLOR_INFO_FOREGROUND)
+    labelProvider.getScapsDocHTML(backgroundColor, foregroundColor)(_)
   }
 
   private val treeContentProvider = new ITreeContentProvider() {
