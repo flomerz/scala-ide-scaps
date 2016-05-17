@@ -2,21 +2,19 @@ package scaps.eclipse.ui.view.search
 
 import java.util.HashMap
 
-import org.eclipse.core.internal.resources.File
-import org.eclipse.core.internal.resources.Workspace
 import org.eclipse.core.resources.IMarker
-import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Path
 import org.eclipse.core.runtime.Status
 import org.eclipse.jface.dialogs.PopupDialog
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport
+import org.eclipse.jface.layout.GridDataFactory
 import org.eclipse.jface.viewers.ISelectionChangedListener
 import org.eclipse.jface.viewers.ITreeContentProvider
 import org.eclipse.jface.viewers.OpenEvent
 import org.eclipse.jface.viewers.SelectionChangedEvent
+import org.eclipse.jface.viewers.StructuredSelection
 import org.eclipse.jface.viewers.TableViewer
 import org.eclipse.jface.viewers.TreeViewer
 import org.eclipse.jface.viewers.Viewer
@@ -24,25 +22,21 @@ import org.eclipse.search.ui.IQueryListener
 import org.eclipse.search.ui.ISearchQuery
 import org.eclipse.search.ui.NewSearchUI
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage
+import org.eclipse.swt.SWT
+import org.eclipse.swt.browser.Browser
+import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.widgets.Composite
+import org.eclipse.swt.widgets.Control
+import org.eclipse.swt.widgets.Shell
 import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.ide.IDE
 import org.eclipse.ui.progress.UIJob
 
 import com.typesafe.scalalogging.StrictLogging
-import org.eclipse.swt.widgets.Shell
-import org.eclipse.swt.layout.GridData
-import org.eclipse.swt.events.FocusAdapter
-import org.eclipse.swt.widgets.Control
-import org.eclipse.swt.SWT
-import org.eclipse.swt.widgets.Text
-import org.eclipse.swt.events.FocusEvent
-import org.eclipse.swt.browser.Browser
-import org.eclipse.jface.viewers.StructuredSelection
-import org.eclipse.swt.graphics.Color
+
+import scaps.api.FileSource
 import scaps.api.Result
 import scaps.api.ValueDef
-import org.eclipse.jface.layout.GridDataFactory
 
 class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLogging {
 
@@ -134,17 +128,18 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
   def elementsChanged(elements: Array[Object]): Unit = {}
 
   override protected def handleOpen(event: OpenEvent): Unit = {
-    event.getSource match {
-      case tableViewer: TableViewer =>
-        val tableItem = tableViewer.getTable.getItem(tableViewer.getTable.getSelectionIndex)
-        val resultString = tableItem.getText
-        // TODO: extract path out of result
-        //    val pathS = resultString.split("").apply(0)
-        val path = new Path("EclipseScapsPlugin/src/TestFile/testFile.scala" /*pathS*/ )
-        ResourcesPlugin.getWorkspace match {
-          case container: Workspace =>
-            container.newResource(path, IResource.FILE) match {
-              case file: File =>
+    event.getSelection match {
+      case selection: StructuredSelection =>
+        selection.getFirstElement match {
+          // TODO: cover other cases like jar
+          case result: Result[ValueDef @unchecked] =>
+            result.entity.source match {
+              case fileSource: FileSource =>
+                val artifactPath = fileSource.artifactPath
+                val relativePath = artifactPath.substring(ResourcesPlugin.getWorkspace.getRoot.getLocation.toString().length())
+                val path = new Path(relativePath)
+                val file = ResourcesPlugin.getWorkspace.getRoot.getFile(path)
+
                 val map = new HashMap[String, Int]()
                 // TODO: extract offset from result
                 val line = 42
@@ -153,6 +148,7 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
                 marker.setAttributes(map)
                 IDE.openEditor(PlatformUI.getWorkbench.getActiveWorkbenchWindow.getActivePage, marker)
             }
+          case _ =>
         }
       case _ =>
     }
