@@ -119,5 +119,10 @@
       </menuContribution>
    </extension>
    
+	<extension point="org.scala-ide.sdt.core.quickAssists">
+		<quickAssist
+			class="scaps.eclipse.ui.view.quickfix.ScapsQuickAssist"
+			id="scaps.eclipse.ui.view.quickfix.quickAssist" />
+	</extension>
 
 </plugin>
