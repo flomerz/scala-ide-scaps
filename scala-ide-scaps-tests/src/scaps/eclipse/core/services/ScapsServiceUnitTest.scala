@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences
 @RunWith(classOf[MockitoJUnitRunner])
 class ScapsServiceUnitTest {
 
-  val scapsService = new ScapsService()
+  val scapsService = ScapsService
   val pluginPreferences = mock(classOf[IEclipsePreferences])
 
   @Test
