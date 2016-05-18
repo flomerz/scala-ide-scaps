@@ -43,13 +43,11 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
         val source = Source.fromFile(projectSourceAbsolutePath, codec).toSeq
         new BatchSourceFile(projectSourceAbsolutePath, source)
       }
-      val module = Module(projectSourceUnits.head.toString, "PROJECT SOURCE", "0.1.0-SNAPSHOT")
-      indexDefinitions(sourceExtractor(classPath)(sourceFiles.toList), module)
+      indexDefinitions(sourceExtractor(classPath)(sourceFiles.toList))
   }
 
   def indexLibrary(classPath: Seq[String], librarySourceRootFile: File): Unit = {
-    val module = Module(librarySourceRootFile.getAbsolutePath, librarySourceRootFile.getName, "0.1.0-SNAPSHOT")
-    indexDefinitions(libraryExtractor(classPath)(librarySourceRootFile), module)
+    indexDefinitions(libraryExtractor(classPath)(librarySourceRootFile))
   }
 
   def indexReset = searchEngine.resetIndexes
@@ -60,17 +58,12 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
     searchEngine.search(searchQuery, Set()).get.getOrElse(List())
   }
 
-  private def indexDefinitions(extractionStream: Stream[ExtractionError \/ Definition], module: Module): Unit = {
+  private def indexDefinitions(extractionStream: Stream[ExtractionError \/ Definition]): Unit = {
 
     def handleExtractionErrors(extractionStream: Stream[ExtractionError \/ Definition]): Stream[Definition] =
       ExtractionError.logErrors(extractionStream, logger.info(_))
 
-    def withModule(definitionStream: Stream[Definition], module: Module): Stream[Definition] =
-      for (definition <- definitionStream) yield {
-        definition.withModule(module)
-      }
-
-    val definitionSteam = withModule(handleExtractionErrors(extractionStream), module)
+    val definitionSteam = handleExtractionErrors(extractionStream)
     searchEngine.index(definitionSteam).get
   }
 
