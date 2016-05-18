@@ -17,7 +17,7 @@
 	<classpathentry exported="true" kind="lib" path="target/libs/scala-library-2.11.7.jar" sourcepath="target/libs/scala-library-2.11.7-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/scala-logging_2.11-3.1.0.jar" sourcepath="target/libs/scala-logging_2.11-3.1.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/scala-parser-combinators_2.11-1.0.2.jar" sourcepath="target/libs/scala-parser-combinators_2.11-1.0.2-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/libs/scala-reflect-2.11.7.jar" sourcepath="target/libs/scala-reflect-2.11.7-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/libs/scala-reflect-2.11.1.jar" sourcepath="target/libs/scala-reflect-2.11.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/scala-xml_2.11-1.0.2.jar" sourcepath="target/libs/scala-xml_2.11-1.0.2-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/scalaz-core_2.11-7.1.1.jar" sourcepath="target/libs/scalaz-core_2.11-7.1.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/scaps-api_2.11-0.5.jar" sourcepath="target/libs/scaps-api_2.11-0.5-sources.jar"/>
