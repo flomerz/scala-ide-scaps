@@ -37,8 +37,14 @@ import com.typesafe.scalalogging.StrictLogging
 import scaps.api.FileSource
 import scaps.api.Result
 import scaps.api.ValueDef
+import org.eclipse.swt.custom.SashForm
+import org.eclipse.swt.widgets.Text
+import org.eclipse.swt.widgets.Button
+import org.eclipse.swt.custom.SashFormData
 
-class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLogging {
+class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearchViewPage.FLAG_LAYOUT_FLAT) with StrictLogging {
+
+  private var scapsDocBrowser: Browser = _
 
   private val contentProvider = new ScapsSearchResultContentProvider(this)
   private val labelProvider = new ScapsSearchResultLabelProvider()
@@ -62,12 +68,10 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
     def queryAdded(query: ISearchQuery): Unit = {}
     def queryRemoved(query: ISearchQuery): Unit = {}
     def queryStarting(query: ISearchQuery): Unit = {}
-    def queryFinished(query: ISearchQuery): Unit = {
-      query match {
-        case scapsQuery: ScapsSearchQuery =>
-          logger.info("query finished - " + scapsQuery.getLabel)
-          updateUI(scapsQuery)
-      }
+    def queryFinished(query: ISearchQuery): Unit = query match {
+      case scapsQuery: ScapsSearchQuery =>
+        logger.info("query finished - " + scapsQuery.getLabel)
+        updateUI(scapsQuery)
     }
   }
 
@@ -80,24 +84,19 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
     }
   }.schedule
 
-  private class ScapsDocPopupDialog(parent: Shell, htmlText: String) extends PopupDialog(parent, PopupDialog.HOVER_SHELLSTYLE, true, false, false, false, false, null, null) {
-    private lazy val gridDataFactory = GridDataFactory
-      .createFrom(new GridData(GridData.BEGINNING | GridData.FILL_BOTH))
-      .indent(PopupDialog.POPUP_HORIZONTALSPACING, PopupDialog.POPUP_VERTICALSPACING)
-      .minSize(600, 300)
-
-    override def createDialogArea(parent: Composite): Control = {
-      val browser = new Browser(parent, SWT.NONE)
-      gridDataFactory.applyTo(browser)
-      browser.setText(htmlText)
-      browser
-    }
+  override def createControl(parent: Composite): Unit = {
+    super.createControl(parent)
+    NewSearchUI.addQueryListener(scapsQueryListener)
   }
 
-  override def createControl(composite: Composite): Unit = {
-    super.createControl(composite)
-    setLayout(AbstractTextSearchViewPage.FLAG_LAYOUT_FLAT)
-    NewSearchUI.addQueryListener(scapsQueryListener)
+  override def createTableViewer(parent: Composite): TableViewer = {
+    val sashForm = new SashForm(parent, SWT.HORIZONTAL)
+    sashForm.setSashWidth(4)
+    sashForm.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_GRAY))
+    val tableViewer = super.createTableViewer(sashForm)
+    scapsDocBrowser = new Browser(sashForm, SWT.NONE)
+    sashForm.setWeights(Array(70, 30))
+    tableViewer
   }
 
   def clear(): Unit = {}
@@ -113,9 +112,8 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage with StrictLoggin
           selection <- Option(event.getSelection).collect { case s: StructuredSelection => s }
           result <- Option(selection.getFirstElement).collect { case r: Result[ValueDef @unchecked] => r }
         } {
-          val shell = tableViewer.getControl.getShell
           val scapsDocHTML = scapsDocProvider(result)
-          new ScapsDocPopupDialog(shell, scapsDocHTML).open()
+          scapsDocBrowser.setText(scapsDocHTML)
         }
       }
     })
