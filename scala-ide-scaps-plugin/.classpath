@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/scala"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/async-http-client-1.8.10.jar" sourcepath="target/sources/async-http-client-1.8.10-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/autowire_2.11-0.2.5.jar" sourcepath="target/sources/autowire_2.11-0.2.5-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/config-1.2.0.jar" sourcepath="target/sources/config-1.2.0-sources.jar"/>
@@ -17,7 +19,7 @@
 	<classpathentry exported="true" kind="lib" path="target/libs/scala-library-2.11.7.jar" sourcepath="target/sources/scala-library-2.11.7-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/scala-logging_2.11-3.1.0.jar" sourcepath="target/sources/scala-logging_2.11-3.1.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/scala-parser-combinators_2.11-1.0.2.jar" sourcepath="target/sources/scala-parser-combinators_2.11-1.0.2-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/libs/scala-reflect-2.11.1.jar" sourcepath="target/sources/scala-reflect-2.11.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/libs/scala-reflect-2.11.7.jar" sourcepath="target/sources/scala-reflect-2.11.7-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/scala-xml_2.11-1.0.2.jar" sourcepath="target/sources/scala-xml_2.11-1.0.2-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/scalaz-core_2.11-7.1.1.jar" sourcepath="target/sources/scalaz-core_2.11-7.1.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/scaps-api_2.11-0.5.jar" sourcepath="target/sources/scaps-api_2.11-0.5-sources.jar"/>
@@ -25,7 +27,5 @@
 	<classpathentry exported="true" kind="lib" path="target/libs/scaps-scala_2.11-0.5.jar" sourcepath="target/sources/scaps-scala_2.11-0.5-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/slf4j-api-1.7.7.jar" sourcepath="target/sources/slf4j-api-1.7.7-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/libs/upickle_2.11-0.3.8.jar" sourcepath="target/sources/upickle_2.11-0.3.8-sources.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

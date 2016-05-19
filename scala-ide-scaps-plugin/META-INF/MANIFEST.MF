@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: scaps.eclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.junit;bundle-version="4.11.0",
  org.eclipse.core.resources;bundle-version="3.9.1",
  org.eclipse.jdt.core;bundle-version="3.10.2",
  org.eclipse.search;bundle-version="3.9.100",
@@ -14,9 +13,7 @@ Require-Bundle: org.eclipse.ui,
  org.scala-ide.sdt.core;bundle-version="4.3.0",
  org.eclipse.jdt.ui;bundle-version="3.10.2",
  org.eclipse.jdt;bundle-version="3.10.1",
- org.eclipse.jface.text;bundle-version="3.9.2",
- org.scala-lang.scala-library;bundle-version="2.11.8",
- org.scala-lang.scala-reflect;bundle-version="2.11.8"
+ org.eclipse.jface.text;bundle-version="3.9.2"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
@@ -36,7 +33,7 @@ Bundle-ClassPath: .,
  target/libs/scala-library-2.11.7.jar,
  target/libs/scala-logging_2.11-3.1.0.jar,
  target/libs/scala-parser-combinators_2.11-1.0.2.jar,
- target/libs/scala-reflect-2.11.1.jar,
+ target/libs/scala-reflect-2.11.7.jar,
  target/libs/scala-xml_2.11-1.0.2.jar,
  target/libs/scalaz-core_2.11-7.1.1.jar,
  target/libs/scaps-api_2.11-0.5.jar,
