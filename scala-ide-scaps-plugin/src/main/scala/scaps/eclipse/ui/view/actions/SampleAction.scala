@@ -2,6 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+// Lizenz?
+
 package scaps.eclipse.ui.view.actions
 
 import java.io.File
@@ -34,15 +36,9 @@ import scaps.scala.featureExtraction.ScalaSourceExtractor
 import scaps.searchEngine.SearchEngine
 import scaps.settings.Settings
 
-/**
- * Our sample action implements workbench action delegate.
- * The action proxy will be created by the workbench and
- * shown in the UI. When the user tries to use the action,
- * this delegate will be created and execution will be
- * delegated to it.
- * @see IWorkbenchWindowActionDelegate
- */
+// Rename?
 class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
+  // Needed?
   private var window: IWorkbenchWindow = _
 
   /**
@@ -78,7 +74,7 @@ class SampleAction extends IWorkbenchWindowActionDelegate with StrictLogging {
     val scalaSrcFiles = srcFiles.filter(!_.getName.endsWith(".scala"))
     printEachFile(scalaSrcFiles)
 
-    var conf = Settings.fromApplicationConf.modIndex { index => index.copy(indexDir = workspacePath + "/.metadata/scaps") }
+    val conf = Settings.fromApplicationConf.modIndex { index => index.copy(indexDir = workspacePath + "/.metadata/scaps") }
     val engine = SearchEngine(conf).get
     engine.resetIndexes
 

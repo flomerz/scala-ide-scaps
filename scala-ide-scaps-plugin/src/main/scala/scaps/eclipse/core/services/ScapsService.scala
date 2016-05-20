@@ -24,14 +24,16 @@ import org.eclipse.core.resources.ResourcesPlugin
 
 object ScapsService {
 
-  val pluginPreferences = InstanceScope.INSTANCE.getNode(ScapsPlugin.PLUGIN_ID)
-  val indexRootDir = ResourcesPlugin.getWorkspace.getRoot.getLocation.toString + ScapsPlugin.INDEX_RELATIVE_ROOT_DIR
+  private val pluginPreferences = InstanceScope.INSTANCE.getNode(ScapsPlugin.PLUGIN_ID)
+  private val indexRootDir = ResourcesPlugin.getWorkspace.getRoot.getLocation.toString + ScapsPlugin.INDEX_RELATIVE_ROOT_DIR
 
   val PROPERTY_INDEXER_RUNNING = "indexRunning"
 
   val PROPERTY_SEARCH_ON_FIRST_INDEX = "searchOnFirstIndex"
   val FIRST_INDEX_DIR = "first"
   val SECOND_INDEX_DIR = "second"
+
+  // Könnte es hier zu Threading-Problemen kommen? Race condition, etc.?
 
   private def isSearchOnFirstIndex = pluginPreferences.getBoolean(PROPERTY_SEARCH_ON_FIRST_INDEX, true)
   private def searchIndexDir = if (isSearchOnFirstIndex) FIRST_INDEX_DIR else SECOND_INDEX_DIR
@@ -52,6 +54,7 @@ object ScapsService {
     pluginPreferences.getBoolean(PROPERTY_INDEXER_RUNNING, false)
   }
 
+  // Entspricht nicht den Scala-Namenskonventionen. Wie wärs mit createSearchService und createIndexService?
   def SEARCH = {
     val indexDir = indexRootDir + searchIndexDir
     val scapsAdapter = new ScapsAdapter(indexDir)

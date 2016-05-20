@@ -16,6 +16,7 @@ import scaps.api.ValueDef
  */
 class ScapsSearchResult(query: ScapsSearchQuery) extends ISearchResult {
 
+  // Sehr unschön, eventuell in Getter/Setter kapseln? Nicht viel besser, doofes API.
   var data: Seq[Result[ValueDef]] = _
 
   /**

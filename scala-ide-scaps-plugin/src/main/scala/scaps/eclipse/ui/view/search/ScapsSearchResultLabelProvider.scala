@@ -78,6 +78,7 @@ class ScapsSearchResultLabelProvider extends StyledCellLabelProvider with Strict
     val text = new StyledString
 
     cell.getElement match {
+      // TODO fix Result(entity: ValueDef)
       case result: Result[ValueDef @unchecked] =>
         cell.setImage(ScalaImages.SCALA_FILE.createImage)
         text.append(result.entity.name)

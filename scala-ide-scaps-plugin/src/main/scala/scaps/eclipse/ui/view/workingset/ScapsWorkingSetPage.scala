@@ -19,15 +19,15 @@ class ScapsWorkingSetPage extends JavaWorkingSetPage {
 
     // get the working set name text control and disable it
     for {
-      subComposite <- composite.getChildren.collect { case c: Composite => c }.headOption
-      workingSetNameText <- subComposite.getChildren.collect { case t: Text => t }.headOption
+      subComposite <- composite.getChildren.collectFirst { case c: Composite => c }
+      workingSetNameText <- subComposite.getChildren.collectFirst { case t: Text => t }
     } {
       workingSetNameText.setEditable(false)
       workingSetNameText.setEnabled(false)
     }
 
     for {
-      subComposite <- composite.getChildren.collect { case c: Composite => c }.headOption
+      subComposite <- composite.getChildren.collectFirst { case c: Composite => c }
     } {
       performBuildCheckbox = createPerformBuildCheckbox(subComposite)
     }

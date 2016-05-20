@@ -30,7 +30,7 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
 
   private def searchEngine = {
     val conf = Settings.fromApplicationConf.modIndex { index => index.copy(indexDir = indexDir) }
-    SearchEngine(conf).get
+    SearchEngine(conf).get // Error Handling?
   }
 
   def indexProject(classPath: Seq[String], projectSourceUnits: Seq[ICompilationUnit]): Unit = projectSourceUnits match {
@@ -55,11 +55,12 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
   def indexFinalize = searchEngine.finalizeIndex.get
 
   def search(searchQuery: String): Seq[Result[ValueDef]] = {
-    searchEngine.search(searchQuery, Set()).get.getOrElse(List())
+    searchEngine.search(searchQuery, Set.empty).get.getOrElse(Seq.empty) // Könnte man auch so schreiben, aber eure Variante ist auch ok.
   }
 
   private def indexDefinitions(extractionStream: Stream[ExtractionError \/ Definition]): Unit = {
 
+    // Lohnt sich diese Methode?
     def handleExtractionErrors(extractionStream: Stream[ExtractionError \/ Definition]): Stream[Definition] =
       ExtractionError.logErrors(extractionStream, logger.info(_))
 

@@ -44,6 +44,7 @@ class ScapsSearchPage extends DialogPage with ISearchPage with StrictLogging {
     exampleQueriesLabel.setText("Example Queries")
 
     val exampleQueriesTextLabel = new Label(result, SWT.NONE)
+    // Hier könnte man einen Multi-Line String mit """xx""" nehmen, der kann Zeilenumbrüche enthalten.
     exampleQueriesTextLabel.setText("max: Int - An integer value with `max` in it's name or doc comment \n max: (Int, Int) => Int - A function taking two ints and returning Int. \n max: Int => Int => Int - Same query as above but in curried form. \n Ordering[String] - Implementations of the `Ordering` typeclass for strings. \n List[A] => Int => Option[A] - A generic query which uses a type parameter `A`. All type identifiers consisting of a single character are treated as type parameters. \n List => Int => Option - The identical query as above but with omitted type parameters. \n &~ - Searches for symbolic operators are also possible.")
 
     setControl(result)
