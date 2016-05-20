@@ -44,11 +44,12 @@ class ScapsIndexService(private val scapsAdapter: ScapsAdapter) extends StrictLo
       resolvedClassPath.map(_.getPath.toString).toList
     }
 
+    // Sehr lange Zeile..
     def returnElements(classPath: Option[List[String]], projectSourceFragmentRoots: Option[List[IPackageFragmentRoot]], librarySourceRootFiles: Option[List[File]]): (List[String], List[IPackageFragmentRoot], List[File]) = {
-      (classPath.getOrElse(List[String]()), projectSourceFragmentRoots.getOrElse(List[IPackageFragmentRoot]()), librarySourceRootFiles.getOrElse(List[File]()))
+      (classPath.getOrElse(List.empty), projectSourceFragmentRoots.getOrElse(List.empty), librarySourceRootFiles.getOrElse(List.empty))
     }
 
-    val collectedElements = scapsWorkingSet.getElements.toList.map(_ match {
+    val (classPaths, projectSourceFragmentRoots, librarySourceRootFiles) = scapsWorkingSet.getElements.toList.map {
       case javaProject: IJavaProject =>
         val classPath = extractClassPath(javaProject)
         val projectSourceFragmentRoots = javaProject.getAllPackageFragmentRoots.filter(_.getKind == IPackageFragmentRoot.K_SOURCE).toList
@@ -70,9 +71,9 @@ class ScapsIndexService(private val scapsAdapter: ScapsAdapter) extends StrictLo
       case unknownTyp =>
         logger.info("type not supported: " + unknownTyp.getClass)
         returnElements(None, None, None)
-    }).unzip3
+    }.unzip3
 
-    (collectedElements._1.flatten.distinct, collectedElements._2.flatten.distinct, collectedElements._3.flatten.distinct)
+    (classPaths.flatten.distinct, projectSourceFragmentRoots.flatten.distinct, librarySourceRootFiles.flatten.distinct)
   }
 
   private def indexProjectTask(monitor: IProgressMonitor, classPath: List[String], projectSourceFragmentRoots: List[IPackageFragmentRoot]): Unit = {

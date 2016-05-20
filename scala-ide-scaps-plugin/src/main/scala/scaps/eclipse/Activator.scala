@@ -12,7 +12,7 @@ import scaps.eclipse.core.services.ScapsService
 /**
  * The activator class controls the plug-in life cycle
  */
-
+// Wird dieser gebraucht? Falls keine Referenz darauf -> löschen.
 class Activator extends AbstractUIPlugin {
   /*
    * (non-Javadoc)

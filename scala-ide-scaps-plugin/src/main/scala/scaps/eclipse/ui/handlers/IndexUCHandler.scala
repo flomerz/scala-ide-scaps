@@ -13,6 +13,7 @@ import scaps.eclipse.core.services.ScapsIndexService
 import scaps.eclipse.core.services.ScapsService
 
 object IndexUCHandler {
+  // Bringt diese Methode etwas?
   private def INSTANCE = new IndexUCHandler(ScapsService.INDEXING)
   def apply(): IndexUCHandler = INSTANCE
 }

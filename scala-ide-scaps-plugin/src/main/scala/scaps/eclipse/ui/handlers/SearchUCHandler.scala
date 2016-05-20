@@ -9,11 +9,12 @@ import scaps.api.ValueDef
 import scaps.eclipse.core.services.ScapsSearchService
 
 object SearchUCHandler {
+  // Wozu?
   private def INSTANCE = new SearchUCHandler(ScapsService.SEARCH)
   def apply(): SearchUCHandler = INSTANCE
 }
 
-class SearchUCHandler(private val scapsSearchService: ScapsSearchService) {
+class SearchUCHandler(scapsSearchService: ScapsSearchService) {
 
   def apply(searchQuery: String): Seq[Result[ValueDef]] = scapsSearchService(searchQuery)
 

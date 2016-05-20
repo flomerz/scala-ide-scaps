@@ -27,6 +27,7 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.jface.viewers.CheckStateChangedEvent
 import org.eclipse.swt.events.SelectionEvent
 
+// Format on multiple lines?
 class ProjectSelectionDialog(var window: IWorkbenchWindow, var selected: Array[IProject]) extends MessageDialog(window.getShell, "Project Indexer", null, "The project indexer allows you to use the Scaps Search", MessageDialog.NONE, Array("Index now", "Cancel"), 0) {
 
   private var projectNames: CheckboxTableViewer = _
@@ -41,11 +42,13 @@ class ProjectSelectionDialog(var window: IWorkbenchWindow, var selected: Array[I
     if (buttonId != IDialogConstants.OK_ID) {
       return
     }
+    // Wozu?
     //save all dirty editors
     BuildUtilities.saveEditors(null);
     //batching changes ensures that autobuild runs after cleaning
   }
 
+  // Cleanup needed
   override def createCustomArea(parent: Composite): Control = {
     val area = new Composite(parent, SWT.NONE)
     area.setFont(parent.getFont)
@@ -164,10 +167,6 @@ class ProjectSelectionDialog(var window: IWorkbenchWindow, var selected: Array[I
     val content = super.createContents(parent)
     updateEnablemente()
     content
-  }
-
-  override def close(): Boolean = {
-    super.close()
   }
 
   override def getInitialLocation(initialSize: Point): Point = {

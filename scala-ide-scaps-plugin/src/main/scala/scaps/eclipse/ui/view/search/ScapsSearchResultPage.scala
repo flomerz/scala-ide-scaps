@@ -55,6 +55,7 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
     labelProvider.getScapsDocHTML(backgroundColor, foregroundColor)(_)
   }
 
+  // Könnte man in eigene Klasse extrahieren, sieht ein bisschen hässlich aus hier:
   private val treeContentProvider = new ITreeContentProvider() {
     def dispose(): Unit = {}
     def inputChanged(viewer: Viewer, x: Any, y: Any): Unit = {}
@@ -106,11 +107,20 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
     tableViewer.setContentProvider(contentProvider)
     tableViewer.setLabelProvider(labelProvider)
 
-    tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+    tableViewer.addSelectionChangedListener(new ISelectionChangedListener {
       def selectionChanged(event: SelectionChangedEvent): Unit = {
         for {
           selection <- Option(event.getSelection).collect { case s: StructuredSelection => s }
-          result <- Option(selection.getFirstElement).collect { case r: Result[ValueDef @unchecked] => r }
+          /* Ich habe das mal refactored um das @unchecked weg zu kriegen,
+           * alelrdings ist der Code sehr unschön. Allerdings wird später im
+           * scapsDocProvider soweit ich sehe nur die entity gebraucht, man
+           * könnte also stattdessen nur das übergeben, das ginge dann so:
+           *
+           *  collect { case Result(v: ValueDef, _, _) => v }
+           *
+           * und sieht wieder hübscher aus.
+           *  */
+          result <- Option(selection.getFirstElement).collect { case r @ Result(_: ValueDef, _, _) => r.asInstanceOf[Result[ValueDef]] }
         } {
           val scapsDocHTML = scapsDocProvider(result)
           scapsDocBrowser.setText(scapsDocHTML)
@@ -134,7 +144,7 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
             result.entity.source match {
               case fileSource: FileSource =>
                 val artifactPath = fileSource.artifactPath
-                val relativePath = artifactPath.substring(ResourcesPlugin.getWorkspace.getRoot.getLocation.toString().length())
+                val relativePath = artifactPath.substring(ResourcesPlugin.getWorkspace.getRoot.getLocation.toString.length)
                 val path = new Path(relativePath)
                 val file = ResourcesPlugin.getWorkspace.getRoot.getFile(path)
 
