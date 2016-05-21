@@ -13,6 +13,7 @@ class ScapsAssistantHandler extends AbstractHandler {
       window.getShell,
       "ScalaSearchIDE",
       "Scaps Assistant")
-    return null;
+    null;
   }
+
 }

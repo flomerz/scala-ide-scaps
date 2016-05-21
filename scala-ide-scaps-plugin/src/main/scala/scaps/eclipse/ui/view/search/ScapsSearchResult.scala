@@ -16,7 +16,10 @@ import scaps.api.ValueDef
  */
 class ScapsSearchResult(query: ScapsSearchQuery) extends ISearchResult {
 
-  var data: Seq[Result[ValueDef]] = _
+  private var data: Seq[Result[ValueDef]] = _
+
+  def setData(data: Seq[Result[ValueDef]]): Unit = this.data = data
+  def getData(): Seq[Result[ValueDef]] = data
 
   /**
    * The image descriptor for the given ISearchResult.

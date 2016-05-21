@@ -12,30 +12,23 @@ class ScapsSearchAction extends IWorkbenchWindowActionDelegate {
 
   private var window: IWorkbenchWindow = _
 
-  def init(window: IWorkbenchWindow) {
+  def init(window: IWorkbenchWindow): Unit = {
     this.window = window
   }
 
-  def run(action: IAction) {
-    getWorkbenchWindow
+  def run(action: IAction): Unit = {
     if (window.getActivePage == null) {
+      // TODO: ErrorHandling
       print("Run: Something is not good!")
       return
     }
     NewSearchUI.openSearchDialog(window, ScapsPlugin.SEARCH_PAGE)
   }
 
-  def selectionChanged(action: IAction, selection: ISelection) {
-  }
+  def selectionChanged(action: IAction, selection: ISelection): Unit = {}
 
-  def dispose {
+  def dispose(): Unit = {
     window = null
-  }
-
-  def getWorkbenchWindow {
-    if (window == null) {
-      window = SearchPlugin.getActiveWorkbenchWindow
-    }
   }
 
 }

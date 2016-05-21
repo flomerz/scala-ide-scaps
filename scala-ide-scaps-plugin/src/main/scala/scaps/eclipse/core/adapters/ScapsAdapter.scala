@@ -55,15 +55,11 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
   def indexFinalize = searchEngine.finalizeIndex.get
 
   def search(searchQuery: String): Seq[Result[ValueDef]] = {
-    searchEngine.search(searchQuery, Set()).get.getOrElse(List())
+    searchEngine.search(searchQuery, Set.empty).get.getOrElse(Seq.empty)
   }
 
   private def indexDefinitions(extractionStream: Stream[ExtractionError \/ Definition]): Unit = {
-
-    def handleExtractionErrors(extractionStream: Stream[ExtractionError \/ Definition]): Stream[Definition] =
-      ExtractionError.logErrors(extractionStream, logger.info(_))
-
-    val definitionSteam = handleExtractionErrors(extractionStream)
+    val definitionSteam = ExtractionError.logErrors(extractionStream, logger.info(_))
     searchEngine.index(definitionSteam).get
   }
 

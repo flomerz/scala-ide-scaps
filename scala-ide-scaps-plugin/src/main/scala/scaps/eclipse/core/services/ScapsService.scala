@@ -24,8 +24,8 @@ import org.eclipse.core.resources.ResourcesPlugin
 
 object ScapsService {
 
-  val pluginPreferences = InstanceScope.INSTANCE.getNode(ScapsPlugin.PLUGIN_ID)
-  val indexRootDir = ResourcesPlugin.getWorkspace.getRoot.getLocation.toString + ScapsPlugin.INDEX_RELATIVE_ROOT_DIR
+  private val pluginPreferences = InstanceScope.INSTANCE.getNode(ScapsPlugin.PLUGIN_ID)
+  private val indexRootDir = ResourcesPlugin.getWorkspace.getRoot.getLocation.toString + ScapsPlugin.INDEX_RELATIVE_ROOT_DIR
 
   val PROPERTY_INDEXER_RUNNING = "indexRunning"
 
@@ -52,13 +52,13 @@ object ScapsService {
     pluginPreferences.getBoolean(PROPERTY_INDEXER_RUNNING, false)
   }
 
-  def SEARCH = {
+  def createSearchService = {
     val indexDir = indexRootDir + searchIndexDir
     val scapsAdapter = new ScapsAdapter(indexDir)
     new ScapsSearchService(scapsAdapter)
   }
 
-  def INDEXING = {
+  def createIndexService = {
     val indexDir = indexRootDir + indexingIndexDir
     val scapsAdapter = new ScapsAdapter(indexDir)
     new ScapsIndexService(scapsAdapter)

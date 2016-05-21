@@ -13,8 +13,7 @@ import scaps.eclipse.core.services.ScapsIndexService
 import scaps.eclipse.core.services.ScapsService
 
 object IndexUCHandler {
-  private def INSTANCE = new IndexUCHandler(ScapsService.INDEXING)
-  def apply(): IndexUCHandler = INSTANCE
+  def apply(): IndexUCHandler = new IndexUCHandler(ScapsService.createIndexService)
 }
 
 class IndexUCHandler(private val scapsIndexService: ScapsIndexService) extends StrictLogging {

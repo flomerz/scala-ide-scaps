@@ -41,6 +41,7 @@ import org.eclipse.swt.custom.SashForm
 import org.eclipse.swt.widgets.Text
 import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.custom.SashFormData
+import scaps.api.PosSource
 
 class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearchViewPage.FLAG_LAYOUT_FLAT) with StrictLogging {
 
@@ -55,6 +56,7 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
     labelProvider.getScapsDocHTML(backgroundColor, foregroundColor)(_)
   }
 
+  //TODO: remove maybe
   private val treeContentProvider = new ITreeContentProvider() {
     def dispose(): Unit = {}
     def inputChanged(viewer: Viewer, x: Any, y: Any): Unit = {}
@@ -106,11 +108,11 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
     tableViewer.setContentProvider(contentProvider)
     tableViewer.setLabelProvider(labelProvider)
 
-    tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+    tableViewer.addSelectionChangedListener(new ISelectionChangedListener {
       def selectionChanged(event: SelectionChangedEvent): Unit = {
         for {
           selection <- Option(event.getSelection).collect { case s: StructuredSelection => s }
-          result <- Option(selection.getFirstElement).collect { case r: Result[ValueDef @unchecked] => r }
+          result <- Option(selection.getFirstElement).collect { case r @ Result(_: ValueDef, _, _) => r.asInstanceOf[Result[ValueDef]] }
         } {
           val scapsDocHTML = scapsDocProvider(result)
           scapsDocBrowser.setText(scapsDocHTML)
@@ -126,29 +128,32 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
   def elementsChanged(elements: Array[Object]): Unit = {}
 
   override protected def handleOpen(event: OpenEvent): Unit = {
-    event.getSelection match {
-      case selection: StructuredSelection =>
-        selection.getFirstElement match {
-          // TODO: cover other cases like jar
-          case result: Result[ValueDef @unchecked] =>
-            result.entity.source match {
-              case fileSource: FileSource =>
-                val artifactPath = fileSource.artifactPath
-                val relativePath = artifactPath.substring(ResourcesPlugin.getWorkspace.getRoot.getLocation.toString().length())
-                val path = new Path(relativePath)
-                val file = ResourcesPlugin.getWorkspace.getRoot.getFile(path)
+    for {
+      selection <- Option(event.getSelection).collect { case s: StructuredSelection => s }
+      valueDef <- Option(selection.getFirstElement).collect { case Result(valueDef: ValueDef, _, _) => valueDef }
+    } {
+      valueDef.source match {
 
-                val map = new HashMap[String, Int]()
-                // TODO: extract offset from result
-                val line = 42
-                map.put(IMarker.LINE_NUMBER, line)
-                val marker = file.createMarker(IMarker.TEXT)
-                marker.setAttributes(map)
-                IDE.openEditor(PlatformUI.getWorkbench.getActiveWorkbenchWindow.getActivePage, marker)
-            }
-          case _ =>
-        }
-      case _ =>
+        // project source file
+        case fileSource @ FileSource(_, _: PosSource) =>
+          val artifactPath = fileSource.artifactPath
+          val relativePath = artifactPath.substring(ResourcesPlugin.getWorkspace.getRoot.getLocation.toString.length)
+          val path = new Path(relativePath)
+          val file = ResourcesPlugin.getWorkspace.getRoot.getFile(path)
+
+          val map = new HashMap[String, Int]()
+          // TODO: extract offset from result
+          val line = 42
+          map.put(IMarker.LINE_NUMBER, line)
+          val marker = file.createMarker(IMarker.TEXT)
+          marker.setAttributes(map)
+          IDE.openEditor(PlatformUI.getWorkbench.getActiveWorkbenchWindow.getActivePage, marker)
+
+        // jar source file
+        case fileSource @ FileSource(_, FileSource(_, _: PosSource)) =>
+
+        case _ =>
+      }
     }
   }
 

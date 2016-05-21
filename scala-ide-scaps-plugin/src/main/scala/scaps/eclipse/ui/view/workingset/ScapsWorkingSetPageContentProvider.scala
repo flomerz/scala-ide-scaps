@@ -12,17 +12,17 @@ class ScapsWorkingSetPageContentProvider extends StandardJavaElementContentProvi
   import StandardJavaElementContentProvider.NO_CHILDREN
 
   override def hasChildren(element: Any): Boolean = element match {
-    case javaProject: IJavaProject => true
-    case _                         => false
+    case _: IJavaProject => true
+    case _               => false
   }
 
   override def getChildren(parentElement: Any): Array[Object] = parentElement match {
-    case javaModel: IJavaModel => super.getChildren(parentElement)
-    case javaProject: IJavaProject => super.getChildren(parentElement).filter(_ match {
+    case _: IJavaModel => super.getChildren(parentElement)
+    case _: IJavaProject => super.getChildren(parentElement).filter {
       case library: JarPackageFragmentRoot => library.getSourceAttachmentPath != null
-      case p: PackageFragmentRoot          => true
+      case _: PackageFragmentRoot          => true
       case _                               => false
-    })
+    }
     case _ => NO_CHILDREN
   }
 

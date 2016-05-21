@@ -20,7 +20,7 @@ class ScapsSearchQuery(query: String) extends ISearchQuery {
   def getSearchResult(): ISearchResult = result
 
   def run(monitor: IProgressMonitor): IStatus = {
-    result.data = SearchUCHandler()(query)
+    result.setData(SearchUCHandler()(query))
     Status.OK_STATUS
   }
 
