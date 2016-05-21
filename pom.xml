@@ -8,12 +8,6 @@
 		<maven>3.0</maven>
 	</prerequisites>
 
-	<!-- <parent>
-		<groupId>org.scala-ide</groupId>
-		<artifactId>plugin-profiles</artifactId>
-		<version>1.0.11</version>
-	</parent> -->
-
 	<groupId>a-group-id</groupId>
 	<artifactId>scala</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -28,7 +22,7 @@
 
 	<properties>
 		<tycho.version>0.24.0</tycho.version>
-		<scala.version>2.11.7</scala.version>
+		<scala.version>2.11.8</scala.version>
 	</properties>
 
 	<build>

@@ -4,7 +4,9 @@ Bundle-Name: scala-ide-scaps-plugin
 Bundle-SymbolicName: scala-ide-scaps-plugin;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: scaps.eclipse.Activator
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.scala-lang.scala-library;bundle-version="2.11.8",
+ org.scala-lang.scala-reflect;bundle-version="2.11.8",
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.9.1",
  org.eclipse.jdt.core;bundle-version="3.10.2",
@@ -29,16 +31,15 @@ Bundle-ClassPath: .,
  target/libs/lucene-core-4.10.4.jar,
  target/libs/lucene-queries-4.10.4.jar,
  target/libs/netty-3.9.2.Final.jar,
- target/libs/scala-compiler-2.11.7.jar,
- target/libs/scala-library-2.11.7.jar,
+ target/libs/scala-compiler-2.11.8.jar,
  target/libs/scala-logging_2.11-3.1.0.jar,
  target/libs/scala-parser-combinators_2.11-1.0.2.jar,
- target/libs/scala-reflect-2.11.7.jar,
+ target/libs/scala-reflect-2.11.1.jar,
  target/libs/scala-xml_2.11-1.0.2.jar,
  target/libs/scalaz-core_2.11-7.1.1.jar,
- target/libs/scaps-api_2.11-0.5.jar,
- target/libs/scaps-core_2.11-0.5.jar,
- target/libs/scaps-scala_2.11-0.5.jar,
+ target/libs/scaps-api_2.11-0.6.jar,
+ target/libs/scaps-core_2.11-0.6.jar,
+ target/libs/scaps-scala_2.11-0.6.jar,
  target/libs/slf4j-api-1.7.7.jar,
  target/libs/upickle_2.11-0.3.8.jar
 Import-Package: org.eclipse.jdt.internal.ui.workingsets
