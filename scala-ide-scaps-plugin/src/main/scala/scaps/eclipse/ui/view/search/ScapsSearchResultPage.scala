@@ -56,17 +56,7 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
     labelProvider.getScapsDocHTML(backgroundColor, foregroundColor)(_)
   }
 
-  //TODO: remove maybe
-  private val treeContentProvider = new ITreeContentProvider() {
-    def dispose(): Unit = {}
-    def inputChanged(viewer: Viewer, x: Any, y: Any): Unit = {}
-    def getChildren(x$1: Any): Array[Object] = Array()
-    def getElements(x$1: Any): Array[Object] = Array()
-    def getParent(x$1: Any): Object = null
-    def hasChildren(x$1: Any): Boolean = false
-  }
-
-  private val scapsQueryListener = new IQueryListener() {
+  private class ScapsQueryListener extends IQueryListener {
     def queryAdded(query: ISearchQuery): Unit = {}
     def queryRemoved(query: ISearchQuery): Unit = {}
     def queryStarting(query: ISearchQuery): Unit = {}
@@ -88,7 +78,7 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
 
   override def createControl(parent: Composite): Unit = {
     super.createControl(parent)
-    NewSearchUI.addQueryListener(scapsQueryListener)
+    NewSearchUI.addQueryListener(new ScapsQueryListener)
   }
 
   override def createTableViewer(parent: Composite): TableViewer = {
@@ -121,12 +111,6 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
     })
   }
 
-  def configureTreeViewer(treeViewer: TreeViewer): Unit = {
-    treeViewer.setContentProvider(treeContentProvider)
-  }
-
-  def elementsChanged(elements: Array[Object]): Unit = {}
-
   override protected def handleOpen(event: OpenEvent): Unit = {
     for {
       selection <- Option(event.getSelection).collect { case s: StructuredSelection => s }
@@ -150,11 +134,15 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
           IDE.openEditor(PlatformUI.getWorkbench.getActiveWorkbenchWindow.getActivePage, marker)
 
         // jar source file
-        case fileSource @ FileSource(_, FileSource(_, _: PosSource)) =>
+        case fileSource @ FileSource(_, fileInJarSource @ FileSource(_, _: PosSource)) =>
 
         case _ =>
       }
     }
   }
+
+  def configureTreeViewer(treeViewer: TreeViewer): Unit = {}
+
+  def elementsChanged(elements: Array[Object]): Unit = {}
 
 }
