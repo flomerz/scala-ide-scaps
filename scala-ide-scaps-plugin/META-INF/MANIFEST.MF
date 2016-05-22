@@ -4,18 +4,18 @@ Bundle-Name: scala-ide-scaps-plugin
 Bundle-SymbolicName: scala-ide-scaps-plugin;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: scaps.eclipse.Activator
-Require-Bundle: org.scala-lang.scala-library;bundle-version="2.11.8",
- org.scala-lang.scala-reflect;bundle-version="2.11.8",
- org.eclipse.ui,
+Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.9.1",
  org.eclipse.jdt.core;bundle-version="3.10.2",
  org.eclipse.search;bundle-version="3.9.100",
  org.eclipse.ui.ide;bundle-version="3.10.2",
- org.scala-ide.sdt.core;bundle-version="4.3.0",
  org.eclipse.jdt.ui;bundle-version="3.10.2",
  org.eclipse.jdt;bundle-version="3.10.1",
- org.eclipse.jface.text;bundle-version="3.9.2"
+ org.eclipse.jface.text;bundle-version="3.9.2",
+ org.scala-lang.scala-library;bundle-version="2.11.8",
+ org.scala-lang.scala-reflect;bundle-version="2.11.8",
+ org.scala-ide.sdt.core;bundle-version="4.4.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
@@ -42,4 +42,10 @@ Bundle-ClassPath: .,
  target/libs/scaps-scala_2.11-0.6.jar,
  target/libs/slf4j-api-1.7.7.jar,
  target/libs/upickle_2.11-0.3.8.jar
-Import-Package: org.eclipse.jdt.internal.ui.workingsets
+Import-Package: org.eclipse.jdt.internal.ui.workingsets,
+ org.scalaide.play2.quickassist,
+ scala.tools.eclipse.contribution.weaving.jdt.core,
+ scala.tools.nsc;version="2.11.8.v20160304-115712-1706a37eb8",
+ scala.tools.nsc.interactive;version="2.11.8.v20160304-115712-1706a37eb8",
+ scala.tools.nsc.typechecker;version="2.11.8.v20160304-115712-1706a37eb8",
+ scalariform.parser

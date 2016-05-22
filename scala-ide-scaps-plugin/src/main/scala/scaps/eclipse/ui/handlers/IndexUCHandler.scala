@@ -16,7 +16,7 @@ object IndexUCHandler {
   def apply(): IndexUCHandler = new IndexUCHandler(ScapsService.createIndexService)
 }
 
-class IndexUCHandler(private val scapsIndexService: ScapsIndexService) extends StrictLogging {
+class IndexUCHandler(scapsIndexService: ScapsIndexService) extends StrictLogging {
 
   lazy val workingSetManager = PlatformUI.getWorkbench.getWorkingSetManager
 

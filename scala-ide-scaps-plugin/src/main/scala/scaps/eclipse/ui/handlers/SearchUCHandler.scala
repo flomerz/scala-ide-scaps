@@ -13,7 +13,7 @@ object SearchUCHandler {
   def apply(): SearchUCHandler = INSTANCE
 }
 
-class SearchUCHandler(private val scapsSearchService: ScapsSearchService) {
+class SearchUCHandler(scapsSearchService: ScapsSearchService) {
 
   def apply(searchQuery: String): Seq[Result[ValueDef]] = scapsSearchService(searchQuery)
 
