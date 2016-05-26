@@ -25,6 +25,7 @@ class ScapsServiceUnitTest {
 
   @Test
   def testExtractOfIJavaProject {
+    when(pluginPreferences.getBoolean(anyString(), anyBoolean())).thenReturn(true)
     scapsService.setIndexerRunning(true)
     val result = pluginPreferences.getBoolean("indexRunning", true)
     assertTrue(result)

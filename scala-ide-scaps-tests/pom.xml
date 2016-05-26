@@ -28,6 +28,7 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
 					<testClass>scaps.eclipse.TestsSuite</testClass>
+					<useUIHarness>true</useUIHarness>
 				</configuration>
 			</plugin>
 

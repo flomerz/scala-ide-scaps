@@ -6,6 +6,7 @@ Bundle-Version: 0.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: scala-ide-scaps-plugin;bundle-version="1.0.0",
  org.scala-lang.scala-library;bundle-version="2.11.8",
+ org.scala-lang.scala-reflect;bundle-version="2.11.8",
  org.junit,
  org.eclipse.core.resources;bundle-version="3.9.1",
  org.eclipse.jdt.core;bundle-version="3.10.2",

@@ -7,8 +7,9 @@ import org.eclipse.jdt.internal.core.PackageFragment
 import org.junit.Before
 import org.junit.Test
 import org.junit.Ignore
+import org.scalaide.core.testsetup.TestProjectSetup
 
-class ExampleIntegrationTest {
+class ExampleIntegrationTest extends TestProjectSetup("simple-structure-builder") {
 
   @Before
   def setup {
@@ -18,10 +19,7 @@ class ExampleIntegrationTest {
   @Test
   @Ignore
   def test1 {
-    val workspace = ResourcesPlugin.getWorkspace.getRoot
-    val workspacePath = workspace.getLocation
-    val proj = workspace.getProjects.filter(_.hasNature(JavaCore.NATURE_ID)).head
-    val javaProj = JavaCore.create(proj)
+    val javaProj = project.javaProject
 
     val srcDirs = javaProj.getAllPackageFragmentRoots.filter(_.getKind == IPackageFragmentRoot.K_SOURCE).head.getChildren.last
     val p: PackageFragment = srcDirs.asInstanceOf[PackageFragment]
