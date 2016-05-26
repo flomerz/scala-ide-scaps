@@ -19,7 +19,7 @@ import org.scalaide.core.internal.quickassist.createmethod.MissingMemberInfo
 import org.scalaide.core.internal.statistics.Groups
 import org.scalaide.ui.ScalaImages
 import scaps.eclipse.ui.handlers.SearchUCHandler
-import scaps.eclipse.ui.view.search.ScapsSearchQuery
+import scaps.eclipse.ui.search.ScapsSearchQuery
 import org.eclipse.search.ui.NewSearchUI
 
 object ScapsFeature extends Feature("ScapsFeature")("Scaps Search", Groups.QuickAssist)
@@ -110,8 +110,7 @@ case class ScapsQuickAssistProposal(
   def applyProposal(doc: IDocument): Unit = {
     val (prettyParameterList, returnTypeStr) = getDefInfo(parameters, returnType)
     val text = prettyParameterList + returnTypeStr
-    NewSearchUI.runQueryInBackground(new ScapsSearchQuery(text))
-    NewSearchUI.activateSearchResultView()
+    SearchUCHandler().search(text)
   }
 
 }

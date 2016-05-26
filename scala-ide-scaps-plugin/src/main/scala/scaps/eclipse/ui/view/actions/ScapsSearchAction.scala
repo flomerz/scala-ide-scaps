@@ -22,7 +22,7 @@ class ScapsSearchAction extends IWorkbenchWindowActionDelegate {
       print("Run: Something is not good!")
       return
     }
-    NewSearchUI.openSearchDialog(window, ScapsPlugin.SEARCH_PAGE)
+
   }
 
   def selectionChanged(action: IAction, selection: ISelection): Unit = {}

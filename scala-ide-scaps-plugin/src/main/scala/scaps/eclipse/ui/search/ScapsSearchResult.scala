@@ -1,12 +1,11 @@
-package scaps.eclipse.ui.view.search;
+package scaps.eclipse.ui.search
 
 import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.search.ui.ISearchQuery
-import org.eclipse.search.ui.text.AbstractTextSearchResult
-import org.scalaide.ui.ScalaImages
-import org.eclipse.search.ui.ISearchResultListener
-import org.eclipse.jdt.internal.ui.search.AbstractJavaSearchResult
 import org.eclipse.search.ui.ISearchResult
+import org.eclipse.search.ui.ISearchResultListener
+import org.scalaide.ui.ScalaImages
+
 import scaps.api.Result
 import scaps.api.ValueDef
 

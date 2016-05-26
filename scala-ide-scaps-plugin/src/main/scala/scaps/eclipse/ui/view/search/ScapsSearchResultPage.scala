@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Text
 import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.custom.SashFormData
 import scaps.api.PosSource
+import scaps.eclipse.ui.search.ScapsSearchQuery
 
 class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearchViewPage.FLAG_LAYOUT_FLAT) with StrictLogging {
 

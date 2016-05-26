@@ -57,7 +57,7 @@
 	<!-- Search Results panel extension point -->
 	<extension point="org.eclipse.search.searchResultViewPages">
 		<viewPage id="scaps.eclipse.ui.view.search.ScapsSearchResultPage"
-				searchResultClass="scaps.eclipse.ui.view.search.ScapsSearchResult"
+				searchResultClass="scaps.eclipse.ui.search.ScapsSearchResult"
 				class="scaps.eclipse.ui.view.search.ScapsSearchResultPage" />
 	</extension>
 

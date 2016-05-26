@@ -1,9 +1,10 @@
 package scaps.eclipse.ui.view.search;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider
-import com.typesafe.scalalogging.StrictLogging
 import org.eclipse.jface.viewers.Viewer
-import scala.collection.mutable.ArrayBuffer
+
+import com.typesafe.scalalogging.StrictLogging
+import scaps.eclipse.ui.search.ScapsSearchQuery
 
 /**
  * Responsible for telling Eclipse what content to show after a successful

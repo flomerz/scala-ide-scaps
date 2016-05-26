@@ -1,13 +1,15 @@
-package scaps.eclipse.ui.view.search
+package scaps.eclipse.ui.search
 
+import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.core.runtime.IStatus
+import org.eclipse.core.runtime.Status
 import org.eclipse.search.ui.ISearchQuery
 import org.eclipse.search.ui.ISearchResult
-import org.eclipse.core.runtime.IStatus
-import org.eclipse.core.runtime.IProgressMonitor
-import org.eclipse.core.runtime.Status
-import scaps.eclipse.ui.handlers.SearchUCHandler
 
-class ScapsSearchQuery(query: String) extends ISearchQuery {
+import scaps.api.Result
+import scaps.api.ValueDef
+
+class ScapsSearchQuery(query: String, searchFunction: (String) => Seq[Result[ValueDef]]) extends ISearchQuery {
 
   val result: ScapsSearchResult = new ScapsSearchResult(this)
 
@@ -20,7 +22,7 @@ class ScapsSearchQuery(query: String) extends ISearchQuery {
   def getSearchResult(): ISearchResult = result
 
   def run(monitor: IProgressMonitor): IStatus = {
-    result.setData(SearchUCHandler()(query))
+    result.setData(searchFunction(query))
     Status.OK_STATUS
   }
 
