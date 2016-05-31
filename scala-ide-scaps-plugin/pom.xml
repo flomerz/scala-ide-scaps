@@ -25,6 +25,12 @@
 			<artifactId>scaps-scala_2.11</artifactId>
 			<version>0.6</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-reflect</artifactId>
+			<version>2.11.8</version>
+		</dependency>
 
 	</dependencies>
 	<build>
