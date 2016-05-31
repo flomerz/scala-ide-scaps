@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Text
 import com.typesafe.scalalogging.StrictLogging
 
 import scaps.eclipse.ui.handlers.SearchUCHandler
+import scaps.eclipse.core.services.ScapsService
 
 class ScapsSearchPage extends DialogPage with ISearchPage with StrictLogging {
 
@@ -42,6 +43,9 @@ class ScapsSearchPage extends DialogPage with ISearchPage with StrictLogging {
 
     inputText = new Text(result, SWT.BORDER)
     inputText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
+    inputText.setFocus
+
+    setQuery(SearchUCHandler().getPrefilledSearchQuery)
 
     val exampleQueriesLabel = new Label(result, SWT.NONE)
     exampleQueriesLabel.setText("Example Queries:")
@@ -56,6 +60,14 @@ class ScapsSearchPage extends DialogPage with ISearchPage with StrictLogging {
 
     setControl(result)
     Dialog.applyDialogFont(result)
+  }
+
+  private def setQuery(query: String): Unit = {
+    inputText.setText(query)
+    val indexOfLastArrow = query.lastIndexOf("=>")
+    if (indexOfLastArrow > -1) {
+      inputText.setSelection(indexOfLastArrow + 2, query.length)
+    }
   }
 
   def performAction: Boolean = {

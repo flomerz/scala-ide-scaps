@@ -12,6 +12,7 @@ import scaps.eclipse.core.adapters.ScapsSearchError
 import scaps.eclipse.core.adapters.ScapsSearchQueryError
 import scaps.searchEngine.QueryError
 import scaps.eclipse.util.Util
+import scaps.eclipse.core.services.ScapsService
 
 object ErrorUCHandler {
 
@@ -29,6 +30,8 @@ object ErrorUCHandler {
         Status.OK_STATUS
       }
     }.schedule
+
+    ScapsService.setIndexerRunning(false)
   }
 
 }

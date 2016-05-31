@@ -30,6 +30,13 @@ class SearchUCHandler(scapsSearchService: ScapsSearchService) {
     NewSearchUI.openSearchDialog(window, ScapsPlugin.SEARCH_PAGE)
   }
 
+  def openSearchDialog(window: IWorkbenchWindow, query: String): Unit = {
+    ScapsService.setPrefilledSearchQuery(query)
+    openSearchDialog(window)
+  }
+
+  def getPrefilledSearchQuery = ScapsService.getPrefilledSearchQuery
+
   def search(query: String): Unit = {
     def searchInternal(query: String) = scapsSearchService(query) match {
       case -\/(error) => {
@@ -39,6 +46,7 @@ class SearchUCHandler(scapsSearchService: ScapsSearchService) {
       case \/-(result) => result
     }
 
+    ScapsService.setPrefilledSearchQuery(query)
     NewSearchUI.runQueryInBackground(new ScapsSearchQuery(query, searchInternal))
     NewSearchUI.activateSearchResultView()
   }
