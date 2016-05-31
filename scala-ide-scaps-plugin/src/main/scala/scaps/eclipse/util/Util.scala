@@ -1,6 +1,8 @@
 package scaps.eclipse.util
 
 import com.typesafe.scalalogging.StrictLogging
+import org.eclipse.ui.IWorkbenchWindow
+import org.eclipse.ui.PlatformUI
 
 object Util extends StrictLogging {
 
@@ -13,5 +15,7 @@ object Util extends StrictLogging {
     val miliseconds = took - (seconds * 1000) - (minutes * 60)
     logger(message + " took: %sm %ss %sms".format(minutes, seconds, miliseconds))
   }
+
+  def getWorkbenchWindow: IWorkbenchWindow = PlatformUI.getWorkbench.getWorkbenchWindows.head
 
 }
