@@ -21,6 +21,7 @@ import scaps.eclipse.core.adapters.ScapsAdapter
 import org.eclipse.core.runtime.preferences.InstanceScope
 import scaps.eclipse.ScapsPlugin
 import org.eclipse.core.resources.ResourcesPlugin
+import java.util.concurrent.Semaphore
 
 object ScapsService {
 
@@ -33,6 +34,8 @@ object ScapsService {
   val FIRST_INDEX_DIR = "first"
   val SECOND_INDEX_DIR = "second"
 
+  val PROPERTY_PREFILLED_SEARCH_QUERY = "prefilledSearchQuery"
+
   private def isSearchOnFirstIndex = pluginPreferences.getBoolean(PROPERTY_SEARCH_ON_FIRST_INDEX, true)
   private def searchIndexDir = if (isSearchOnFirstIndex) FIRST_INDEX_DIR else SECOND_INDEX_DIR
   private def indexingIndexDir = if (isSearchOnFirstIndex) SECOND_INDEX_DIR else FIRST_INDEX_DIR
@@ -43,13 +46,34 @@ object ScapsService {
     pluginPreferences.flush
   }
 
+  private val indexerRunningSemaphore = new Semaphore(1, true)
   def setIndexerRunning(running: Boolean): Unit = {
+    indexerRunningSemaphore.acquire
     pluginPreferences.putBoolean(PROPERTY_INDEXER_RUNNING, running)
     pluginPreferences.flush
+    indexerRunningSemaphore.release
   }
 
   def isIndexerRunning: Boolean = {
-    pluginPreferences.getBoolean(PROPERTY_INDEXER_RUNNING, false)
+    indexerRunningSemaphore.acquire
+    val running = pluginPreferences.getBoolean(PROPERTY_INDEXER_RUNNING, false)
+    indexerRunningSemaphore.release
+    running
+  }
+
+  private val prefilledSearchQuerySemaphore = new Semaphore(1, true)
+  def setPrefilledSearchQuery(query: String): Unit = {
+    prefilledSearchQuerySemaphore.acquire
+    pluginPreferences.put(PROPERTY_PREFILLED_SEARCH_QUERY, query)
+    pluginPreferences.flush
+    prefilledSearchQuerySemaphore.release
+  }
+
+  def getPrefilledSearchQuery: String = {
+    prefilledSearchQuerySemaphore.acquire
+    val query = pluginPreferences.get(PROPERTY_PREFILLED_SEARCH_QUERY, "")
+    prefilledSearchQuerySemaphore.release
+    query
   }
 
   def createSearchService = {
