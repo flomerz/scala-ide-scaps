@@ -2,11 +2,10 @@ package scaps.eclipse.ui.view.actions
 
 import org.eclipse.jface.action.IAction
 import org.eclipse.jface.viewers.ISelection
-import org.eclipse.search.internal.ui.SearchPlugin
-import org.eclipse.search.ui.NewSearchUI
 import org.eclipse.ui.IWorkbenchWindow
 import org.eclipse.ui.IWorkbenchWindowActionDelegate
-import scaps.eclipse.ScapsPlugin
+
+import scaps.eclipse.ui.handlers.SearchUCHandler
 
 class ScapsSearchAction extends IWorkbenchWindowActionDelegate {
 
@@ -22,6 +21,7 @@ class ScapsSearchAction extends IWorkbenchWindowActionDelegate {
       print("Run: Something is not good!")
       return
     }
+    SearchUCHandler().openSearchDialog(window)
 
   }
 
