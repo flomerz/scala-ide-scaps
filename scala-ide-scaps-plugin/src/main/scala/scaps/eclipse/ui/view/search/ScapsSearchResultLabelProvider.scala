@@ -4,16 +4,14 @@ import org.eclipse.jface.resource.JFaceResources
 import org.eclipse.jface.viewers.StyledCellLabelProvider
 import org.eclipse.jface.viewers.StyledString
 import org.eclipse.jface.viewers.ViewerCell
+import org.eclipse.swt.graphics.Color
 import org.eclipse.swt.graphics.RGB
-import com.typesafe.scalalogging.StrictLogging
 import org.scalaide.ui.ScalaImages
-import org.eclipse.swt.graphics.Point
+
+import com.typesafe.scalalogging.StrictLogging
+
 import scaps.api.Result
 import scaps.api.ValueDef
-import scala.xml.XML
-import sun.awt.X11.InfoWindow.Tooltip
-import org.eclipse.swt.SWT
-import org.eclipse.swt.graphics.Color
 
 /**
  * Responsible for telling Eclipse how to render the results in the
@@ -42,6 +40,7 @@ class ScapsSearchResultLabelProvider extends StyledCellLabelProvider with Strict
         }
         p { margin: 0px; }
         .description { margin-top: 10px; }
+        .additionals { margin-top: 20px; }
         .attribute {
             font-weight: bold;
             margin-top: 20px;
@@ -61,13 +60,18 @@ class ScapsSearchResultLabelProvider extends StyledCellLabelProvider with Strict
       case (attribute, body) => s"""<div class="attribute">$attribute</div><div class="attributeBody">$body</div>"""
     }.mkString
 
+    private def createAdditionals(score: Float, artifactPath: String): String =
+      s"""<div class="additionals">Source:</br>$artifactPath</div>
+          <div class="additionals">Score: $score</div>"""
+
     def apply(backgroundColor: Color, foregroundColor: Color, result: Result[ValueDef]): String = {
       val comment = result.entity.comment
       createHTML(
         createCSSStyle(backgroundColor.toRGBCode, foregroundColor.toRGBCode),
         createBody(
           comment.body,
-          createAttributes(comment.attributes)))
+          createAttributes(comment.attributes))
+          + createAdditionals(result.score, result.entity.source.artifactPath))
     }
   }
 
@@ -81,12 +85,7 @@ class ScapsSearchResultLabelProvider extends StyledCellLabelProvider with Strict
       case result @ Result(entity: ValueDef, _, _) =>
         cell.setImage(ScalaImages.SCALA_FILE.createImage)
         text.append(entity.name)
-        text append " - "
         text.append(entity.docLink.get.dropWhile(_ != '('), StyledString.COUNTER_STYLER)
-        text append " - "
-        text.append("Score: " + result.score.toString, StyledString.DECORATIONS_STYLER)
-        text append " - "
-        text.append(entity.module.toString, StyledString.QUALIFIER_STYLER)
       case _ =>
     }
 
