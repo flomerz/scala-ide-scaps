@@ -25,6 +25,7 @@ import scaps.searchEngine.QueryError
 import scaps.searchEngine.SearchEngine
 import scaps.settings.Settings
 import scala.util.Failure
+import scala.util.control.NonFatal
 
 sealed class ScapsError
 case class ScapsEngineError(throwable: Throwable) extends ScapsError
@@ -45,7 +46,7 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
     try {
       \/.right(SearchEngine(conf).get)
     } catch {
-      case t: Throwable => \/.left(ScapsEngineError(t))
+      case NonFatal(t) => \/.left(ScapsEngineError(t))
     }
   }
 
@@ -80,7 +81,7 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
             case \/-(result)     => \/.right(result)
           }
         } catch {
-          case t: Throwable => \/.left(ScapsSearchError(t))
+          case NonFatal(t) => \/.left(ScapsSearchError(t))
         }
     }
   }
