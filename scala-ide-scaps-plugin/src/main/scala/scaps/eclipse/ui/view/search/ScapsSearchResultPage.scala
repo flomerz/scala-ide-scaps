@@ -1,48 +1,39 @@
 package scaps.eclipse.ui.view.search
 
-import java.util.HashMap
-
-import org.eclipse.core.resources.IMarker
-import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.filesystem.EFS
+import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Path
 import org.eclipse.core.runtime.Status
-import org.eclipse.jface.dialogs.PopupDialog
-import org.eclipse.jface.layout.GridDataFactory
 import org.eclipse.jface.viewers.ISelectionChangedListener
-import org.eclipse.jface.viewers.ITreeContentProvider
 import org.eclipse.jface.viewers.OpenEvent
 import org.eclipse.jface.viewers.SelectionChangedEvent
 import org.eclipse.jface.viewers.StructuredSelection
 import org.eclipse.jface.viewers.TableViewer
 import org.eclipse.jface.viewers.TreeViewer
-import org.eclipse.jface.viewers.Viewer
 import org.eclipse.search.ui.IQueryListener
 import org.eclipse.search.ui.ISearchQuery
 import org.eclipse.search.ui.NewSearchUI
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage
 import org.eclipse.swt.SWT
 import org.eclipse.swt.browser.Browser
-import org.eclipse.swt.layout.GridData
+import org.eclipse.swt.custom.SashForm
 import org.eclipse.swt.widgets.Composite
-import org.eclipse.swt.widgets.Control
-import org.eclipse.swt.widgets.Shell
 import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.ide.IDE
 import org.eclipse.ui.progress.UIJob
+import org.eclipse.ui.texteditor.ITextEditor
 
 import com.typesafe.scalalogging.StrictLogging
 
 import scaps.api.FileSource
-import scaps.api.Result
-import scaps.api.ValueDef
-import org.eclipse.swt.custom.SashForm
-import org.eclipse.swt.widgets.Text
-import org.eclipse.swt.widgets.Button
-import org.eclipse.swt.custom.SashFormData
 import scaps.api.PosSource
+import scaps.api.Result
+import scaps.api.Source
+import scaps.api.ValueDef
 import scaps.eclipse.ui.search.ScapsSearchQuery
+import java.util.zip.ZipFile
 
 class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearchViewPage.FLAG_LAYOUT_FLAT) with StrictLogging {
 
@@ -118,27 +109,48 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
       valueDef <- Option(selection.getFirstElement).collect { case Result(valueDef: ValueDef, _, _) => valueDef }
     } {
       valueDef.source match {
-
-        // project source file
         case fileSource @ FileSource(_, _: PosSource) =>
-          val artifactPath = fileSource.artifactPath
-          val relativePath = artifactPath.substring(ResourcesPlugin.getWorkspace.getRoot.getLocation.toString.length)
-          val path = new Path(relativePath)
-          val file = ResourcesPlugin.getWorkspace.getRoot.getFile(path)
-
-          val map = new HashMap[String, Int]()
-          // TODO: extract offset from result
-          val line = 42
-          map.put(IMarker.LINE_NUMBER, line)
-          val marker = file.createMarker(IMarker.TEXT)
-          marker.setAttributes(map)
-          IDE.openEditor(PlatformUI.getWorkbench.getActiveWorkbenchWindow.getActivePage, marker)
-
-        // jar source file
+          val path = new Path(fileSource.artifactPath)
+          openFileInEditor(path, fileSource.startPos.getOrElse(0), fileSource.endPos.getOrElse(0))
         case fileSource @ FileSource(_, fileInJarSource @ FileSource(_, _: PosSource)) =>
-
+          val path = new Path(fileSource.artifactPath)
+          println("+++++++ LIB +++++")
+          println(path)
+          //          x(path, fileInJarSource.artifactPath)
+          openFileInEditor(path, 0, 0)
         case _ =>
       }
+    }
+  }
+
+  def x(path: IPath, innerSource: String): Unit = {
+    val fileStore = EFS.getLocalFileSystem.getStore(path)
+    val file = fileStore.toLocalFile(EFS.NONE, null)
+    val zip = new ZipFile(file)
+    val x = zip.getEntry(innerSource)
+    val editor = IDE.openEditorOnFileStore(PlatformUI.getWorkbench.getActiveWorkbenchWindow.getActivePage, fileStore)
+    editor match {
+      case textEditor: ITextEditor => selectLineInEditor(5, 8, textEditor)
+      case _                       =>
+    }
+  }
+
+  def openFileInEditor(path: IPath, startPos: Int, endPos: Int): Unit = {
+    val fileStore = EFS.getLocalFileSystem.getStore(path)
+    val editor = IDE.openEditorOnFileStore(PlatformUI.getWorkbench.getActiveWorkbenchWindow.getActivePage, fileStore)
+    editor match {
+      case textEditor: ITextEditor => selectLineInEditor(startPos, endPos, textEditor)
+      case _                       =>
+    }
+  }
+
+  def selectLineInEditor(startPos: Int, endPos: Int, editor: ITextEditor): Unit = {
+    for {
+      documentProvider <- Option(editor.getDocumentProvider)
+      editorInput <- Option(editor.getEditorInput)
+      document <- Option(documentProvider.getDocument(editorInput))
+    } {
+      editor.selectAndReveal(startPos, endPos - startPos)
     }
   }
 

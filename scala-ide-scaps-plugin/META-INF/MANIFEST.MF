@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui,
  org.scala-lang.scala-library;bundle-version="2.11.8",
  org.scala-lang.scala-reflect;bundle-version="2.11.8",
  org.scala-lang.scala-compiler;bundle-version="2.11.8",
- org.scala-ide.sdt.core;bundle-version="4.4.1"
+ org.scala-ide.sdt.core;bundle-version="4.4.1",
+ org.eclipse.core.filesystem;bundle-version="1.4.100"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
@@ -44,6 +45,7 @@ Bundle-ClassPath: .,
  target/libs/slf4j-api-1.7.7.jar,
  target/libs/upickle_2.11-0.3.8.jar
 Import-Package: org.eclipse.jdt.internal.ui.workingsets,
+ org.eclipse.ui.texteditor,
  org.scalaide.play2.quickassist,
  scala.tools.eclipse.contribution.weaving.jdt.core,
  scalariform.parser
