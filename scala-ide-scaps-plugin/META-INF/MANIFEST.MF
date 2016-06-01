@@ -15,6 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text;bundle-version="3.9.2",
  org.scala-lang.scala-library;bundle-version="2.11.8",
  org.scala-lang.scala-reflect;bundle-version="2.11.8",
+ org.scala-lang.scala-compiler;bundle-version="2.11.8",
  org.scala-ide.sdt.core;bundle-version="4.4.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -45,7 +46,4 @@ Bundle-ClassPath: .,
 Import-Package: org.eclipse.jdt.internal.ui.workingsets,
  org.scalaide.play2.quickassist,
  scala.tools.eclipse.contribution.weaving.jdt.core,
- scala.tools.nsc;version="2.11.8.v20160304-115712-1706a37eb8",
- scala.tools.nsc.interactive;version="2.11.8.v20160304-115712-1706a37eb8",
- scala.tools.nsc.typechecker;version="2.11.8.v20160304-115712-1706a37eb8",
  scalariform.parser
