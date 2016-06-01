@@ -13,15 +13,26 @@ import scaps.eclipse.core.adapters.ScapsSearchQueryError
 import scaps.searchEngine.QueryError
 import scaps.eclipse.util.Util
 import scaps.eclipse.core.services.ScapsService
+import com.typesafe.scalalogging.StrictLogging
 
-object ErrorUCHandler {
+object ErrorUCHandler extends StrictLogging {
 
   def apply(scapsError: ScapsError): Unit = {
+    def log(msg: String, throwable: Throwable): String = {
+      logger.error(msg, throwable)
+      msg
+    }
     val msg = scapsError match {
-      case ScapsEngineError(_) => "Scaps Search Engine couldn't be loaded!"
-      case ScapsSearchError(_) => "Error while searching Scaps!"
-      case ScapsSearchQueryError(queryError: QueryError) => "Error with Query"
-      case _ => "Something went wrong!"
+      case ScapsEngineError(t) => log("Scaps Search Engine couldn't be loaded!", t)
+      case ScapsSearchError(t) => log("Error while searching Scaps!", t)
+      case ScapsSearchQueryError(queryError: QueryError) => {
+        logger.error(queryError.toString)
+        "Error with Query"
+      }
+      case _ => {
+        logger.error(scapsError.toString)
+        "Something went wrong!"
+      }
     }
 
     new UIJob("Show Scaps Plugin Error") {
