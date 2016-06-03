@@ -8,24 +8,26 @@ import org.eclipse.ui.progress.UIJob
 
 import com.typesafe.scalalogging.StrictLogging
 
-import scalaz.{ -\/ => -\/ }
-import scalaz.{ \/ => \/ }
 import scaps.eclipse.core.adapters.ScapsEngineError
 import scaps.eclipse.core.adapters.ScapsError
+import scaps.eclipse.core.adapters.ScapsIndexError
 import scaps.eclipse.core.adapters.ScapsSearchError
 import scaps.eclipse.core.adapters.ScapsSearchQueryError
 import scaps.searchEngine.QueryError
+import scaps.eclipse.ScapsPlugin
 
 object ErrorHandler extends StrictLogging {
 
   def apply(scapsError: ScapsError): Unit = {
     def log(msg: String, throwable: Throwable): String = {
       logger.error(msg, throwable)
+      ScapsPlugin.log(msg, throwable)
       msg
     }
     val msg = scapsError match {
       case ScapsEngineError(t) => log("Scaps Search Engine couldn't be loaded!", t)
       case ScapsSearchError(t) => log("Error while searching Scaps!", t)
+      case ScapsIndexError(t)  => log("Error while indexing Scaps!", t)
       case ScapsSearchQueryError(queryError: QueryError) =>
         val queryErrorStr = queryError.toString
         logger.error(queryErrorStr)
