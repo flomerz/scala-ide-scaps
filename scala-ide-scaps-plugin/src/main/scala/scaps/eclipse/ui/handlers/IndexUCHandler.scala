@@ -11,6 +11,7 @@ import com.typesafe.scalalogging.StrictLogging
 import scaps.eclipse.ScapsPlugin
 import scaps.eclipse.core.services.ScapsIndexService
 import scaps.eclipse.core.services.ScapsService
+import scaps.eclipse.core.services.ScapsSettingsService
 
 object IndexUCHandler {
   def apply(): IndexUCHandler = new IndexUCHandler(ScapsService.createIndexService)
@@ -21,7 +22,7 @@ class IndexUCHandler(scapsIndexService: ScapsIndexService) extends StrictLogging
   lazy val workingSetManager = PlatformUI.getWorkbench.getWorkingSetManager
 
   def runIndexer(window: IWorkbenchWindow): Unit = {
-    if (ScapsService.isIndexerRunning) {
+    if (ScapsSettingsService.isIndexerRunning) {
       MessageDialog.openInformation(window.getShell(),
         "Scaps Indexer",
         "The Scaps Indexer is already running, please wait until it's done.");

@@ -34,6 +34,7 @@ import scaps.api.Source
 import scaps.api.ValueDef
 import scaps.eclipse.ui.search.ScapsSearchQuery
 import java.util.zip.ZipFile
+import java.net.URI
 
 class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearchViewPage.FLAG_LAYOUT_FLAT) with StrictLogging {
 
@@ -113,17 +114,17 @@ class ScapsSearchResultPage extends AbstractTextSearchViewPage(AbstractTextSearc
           val path = new Path(fileSource.artifactPath)
           openFileInEditor(path, fileSource.startPos.getOrElse(0), fileSource.endPos.getOrElse(0))
         case fileSource @ FileSource(_, fileInJarSource @ FileSource(_, _: PosSource)) =>
-          val path = new Path(fileSource.artifactPath)
+          val path = new Path(fileSource.artifactPath + "|" + fileInJarSource.artifactPath)
           println("+++++++ LIB +++++")
           println(path)
-          //          x(path, fileInJarSource.artifactPath)
-          openFileInEditor(path, 0, 0)
+          x(path, fileInJarSource.artifactPath)
+        //          openFileInEditor(path, 0, 0)
         case _ =>
       }
     }
   }
 
-  def x(path: IPath, innerSource: String): Unit = {
+  def x(path: Path, innerSource: String): Unit = {
     val fileStore = EFS.getLocalFileSystem.getStore(path)
     val file = fileStore.toLocalFile(EFS.NONE, null)
     val zip = new ZipFile(file)

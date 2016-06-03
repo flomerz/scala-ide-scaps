@@ -8,6 +8,7 @@ import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.ui.plugin.AbstractUIPlugin
 import org.osgi.framework.BundleContext;
 import scaps.eclipse.core.services.ScapsService
+import scaps.eclipse.core.services.ScapsSettingsService
 
 object ScapsPlugin {
 
@@ -26,7 +27,7 @@ class ScapsPlugin extends AbstractUIPlugin {
 
   override def start(context: BundleContext) {
     super.start(context);
-    ScapsService.setIndexerRunning(false)
+    ScapsSettingsService.setIndexerRunning(false)
   }
 
 }

@@ -1,23 +1,16 @@
 package scaps.eclipse.ui.handlers
 
-import scala.util.Try
-
 import org.eclipse.search.ui.NewSearchUI
 import org.eclipse.ui.IWorkbenchWindow
 
-import scalaz.\/
-import scalaz.-\/
-import scalaz.\/-
-import scaps.api.Result
-import scaps.api.ValueDef
+import scalaz.{ -\/ => -\/ }
+import scalaz.{ \/- => \/- }
 import scaps.eclipse.ScapsPlugin
-import scaps.eclipse.core.adapters.ScapsEngineError
 import scaps.eclipse.core.services.ScapsSearchService
 import scaps.eclipse.core.services.ScapsService
 import scaps.eclipse.ui.search.ScapsSearchQuery
-import scaps.searchEngine.QueryError
-import scala.util.Success
-import scala.util.Failure
+import scaps.eclipse.util.ErrorHandler
+import scaps.eclipse.core.services.ScapsSettingsService
 
 object SearchUCHandler {
   private def INSTANCE = new SearchUCHandler(ScapsService.createSearchService)
@@ -31,22 +24,22 @@ class SearchUCHandler(scapsSearchService: ScapsSearchService) {
   }
 
   def openSearchDialog(window: IWorkbenchWindow, query: String): Unit = {
-    ScapsService.setPrefilledSearchQuery(query)
+    ScapsSettingsService.setPrefilledSearchQuery(query)
     openSearchDialog(window)
   }
 
-  def getPrefilledSearchQuery = ScapsService.getPrefilledSearchQuery
+  def getPrefilledSearchQuery = ScapsSettingsService.getPrefilledSearchQuery
 
   def search(query: String): Unit = {
     def searchInternal(query: String) = scapsSearchService(query) match {
       case -\/(error) => {
-        ErrorUCHandler(error)
+        ErrorHandler(error)
         Seq.empty
       }
       case \/-(result) => result
     }
 
-    ScapsService.setPrefilledSearchQuery(query)
+    ScapsSettingsService.setPrefilledSearchQuery(query)
     NewSearchUI.runQueryInBackground(new ScapsSearchQuery(query, searchInternal))
     NewSearchUI.activateSearchResultView()
   }

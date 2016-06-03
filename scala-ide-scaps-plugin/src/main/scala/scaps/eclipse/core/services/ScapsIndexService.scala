@@ -1,38 +1,53 @@
 package scaps.eclipse.core.services
 
-import org.eclipse.core.runtime.IStatus
-import org.eclipse.jdt.internal.core.PackageFragment
-import org.eclipse.core.runtime.IProgressMonitor
-import org.eclipse.jdt.core.IJavaElement
-import org.eclipse.jdt.core.IPackageFragmentRoot
-import org.eclipse.ui.IWorkingSet
-import org.eclipse.core.runtime.jobs.Job
-import org.eclipse.core.runtime.SubMonitor
-import org.eclipse.jdt.core.IJavaProject
-import org.eclipse.jdt.core.ICompilationUnit
 import java.io.File
+
+import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Status
+import org.eclipse.core.runtime.SubMonitor
+import org.eclipse.core.runtime.jobs.Job
+import org.eclipse.jdt.core.ICompilationUnit
+import org.eclipse.jdt.core.IJavaElement
+import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jdt.internal.core.JarPackageFragmentRoot
+import org.eclipse.jdt.internal.core.PackageFragment
+import org.eclipse.ui.IWorkingSet
+
 import com.typesafe.scalalogging.StrictLogging
+
+import scalaz.{ \/ => \/ }
+import scalaz.{ -\/ => -\/ }
 import scaps.eclipse.core.adapters.ScapsAdapter
+import scaps.eclipse.core.adapters.ScapsError
+import scaps.eclipse.util.ErrorHandler
 import scaps.eclipse.util.Util
 
 class ScapsIndexService(private val scapsAdapter: ScapsAdapter) extends StrictLogging {
 
+  def handleIndexError(maybeError: ScapsError \/ Unit) = maybeError match {
+    case -\/(error) => {
+      ScapsSettingsService.setIndexerRunning(false)
+      ErrorHandler(error)
+    }
+    case _ =>
+  }
+
   def apply(scapsWorkingSet: IWorkingSet): Unit = {
-    ScapsService.setIndexerRunning(true)
+    ScapsSettingsService.setIndexerRunning(true)
 
     new Job("Scaps Indexer") {
       def run(monitor: IProgressMonitor): IStatus = {
         val subMonitor = SubMonitor.convert(monitor, 3)
         monitor.setTaskName("Collect Elements")
         val (classPath, projectSourceFragmentRoots, librarySourceRootFiles) = extractElements(scapsWorkingSet)
-        scapsAdapter.indexReset
+        handleIndexError(scapsAdapter.indexReset)
         Util.logTime(logger.info(_), "indexing libraries", indexLibrariesTask(subMonitor.newChild(1), classPath, librarySourceRootFiles))
         Util.logTime(logger.info(_), "indexing project sources", indexProjectTask(subMonitor.newChild(1), classPath, projectSourceFragmentRoots))
         Util.logTime(logger.info(_), "index finalize", indexFinalize(subMonitor.newChild(1)))
-        ScapsService.swapIndexDirs
-        ScapsService.setIndexerRunning(false)
+        ScapsSettingsService.swapIndexDirs
+        ScapsSettingsService.setIndexerRunning(false)
         Status.OK_STATUS
       }
     }.schedule
@@ -97,23 +112,23 @@ class ScapsIndexService(private val scapsAdapter: ScapsAdapter) extends StrictLo
     }
 
     val projectSourceFilePaths = projectSourceFragmentRoots.flatMap(findSourceFiles)
-    scapsAdapter.indexProject(classPath, projectSourceFilePaths)
+    handleIndexError(scapsAdapter.indexProject(classPath, projectSourceFilePaths))
   }
 
   private def indexLibrariesTask(monitor: IProgressMonitor, classPath: List[String], librarySourceRootFiles: List[File]): Unit = {
     def indexLibraryTask(monitor: IProgressMonitor, librarySourceRootFile: File): Unit = {
       monitor.setTaskName("Library: " + librarySourceRootFile.getPath)
-      scapsAdapter.indexLibrary(classPath, librarySourceRootFile)
+      handleIndexError(scapsAdapter.indexLibrary(classPath, librarySourceRootFile))
     }
 
     monitor.setTaskName("Index Libraries")
     val subMonitor = SubMonitor.convert(monitor, librarySourceRootFiles.length)
-    librarySourceRootFiles.foreach(indexLibraryTask(subMonitor.newChild(1), _))
+    librarySourceRootFiles.map(indexLibraryTask(subMonitor.newChild(1), _))
   }
 
   private def indexFinalize(monitor: IProgressMonitor): Unit = {
     monitor.setTaskName("Finalize Index")
-    scapsAdapter.indexFinalize
+    handleIndexError(scapsAdapter.indexFinalize)
   }
 
 }

@@ -29,6 +29,7 @@ import scala.util.control.NonFatal
 
 sealed class ScapsError
 case class ScapsEngineError(throwable: Throwable) extends ScapsError
+case class ScapsIndexError(throwable: Throwable) extends ScapsError
 case class ScapsSearchError(throwable: Throwable) extends ScapsError
 case class ScapsSearchQueryError(queryError: QueryError) extends ScapsError
 
@@ -44,14 +45,14 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
   private def searchEngine: ScapsEngineError \/ SearchEngine = {
     val conf = Settings.fromApplicationConf.modIndex { index => index.copy(indexDir = indexDir) }
     try {
-      \/.right(SearchEngine(conf).get)
+      \/-(SearchEngine(conf).get)
     } catch {
-      case NonFatal(t) => \/.left(ScapsEngineError(t))
+      case NonFatal(t) => -\/(ScapsEngineError(t))
     }
   }
 
-  def indexProject(classPath: Seq[String], projectSourceUnits: Seq[ICompilationUnit]): Unit = projectSourceUnits match {
-    case Seq() =>
+  def indexProject(classPath: Seq[String], projectSourceUnits: Seq[ICompilationUnit]): ScapsError \/ Unit = projectSourceUnits match {
+    case Seq() => \/-()
     case _ =>
       val sourceFiles = projectSourceUnits.map { projectSourceUnit =>
         val projectSourcePath = projectSourceUnit.getPath
@@ -63,32 +64,55 @@ class ScapsAdapter(indexDir: String) extends StrictLogging {
       indexDefinitions(sourceExtractor(classPath)(sourceFiles.toList))
   }
 
-  def indexLibrary(classPath: Seq[String], librarySourceRootFile: File): Unit = {
+  def indexLibrary(classPath: Seq[String], librarySourceRootFile: File): ScapsError \/ Unit =
     indexDefinitions(libraryExtractor(classPath)(librarySourceRootFile))
+
+  def indexReset: ScapsError \/ Unit = searchEngine match {
+    case -\/(error) => -\/(error)
+    case \/-(engine) =>
+      try {
+        \/-(engine.resetIndexes.get)
+      } catch {
+        case NonFatal(t) => -\/(ScapsIndexError(t))
+      }
   }
 
-  def indexReset = searchEngine.map(_.resetIndexes.get)
-
-  def indexFinalize = searchEngine.map(_.finalizeIndex.get)
+  def indexFinalize: ScapsError \/ Unit = searchEngine match {
+    case -\/(error) => -\/(error)
+    case \/-(engine) =>
+      try {
+        \/-(engine.finalizeIndex.get)
+      } catch {
+        case NonFatal(t) => -\/(ScapsIndexError(t))
+      }
+  }
 
   def search(searchQuery: String): ScapsError \/ Seq[Result[ValueDef]] = {
     searchEngine match {
-      case -\/(error) => \/.left(error)
+      case -\/(error) => -\/(error)
       case \/-(engine) =>
         try {
           engine.search(searchQuery, Set.empty).get match {
-            case -\/(queryError) => \/.left(ScapsSearchQueryError(queryError))
-            case \/-(result)     => \/.right(result)
+            case -\/(queryError) => -\/(ScapsSearchQueryError(queryError))
+            case \/-(result)     => \/-(result)
           }
         } catch {
-          case NonFatal(t) => \/.left(ScapsSearchError(t))
+          case NonFatal(t) => -\/(ScapsSearchError(t))
         }
     }
   }
 
-  private def indexDefinitions(extractionStream: Stream[ExtractionError \/ Definition]): Unit = {
+  private def indexDefinitions(extractionStream: Stream[ExtractionError \/ Definition]): ScapsError \/ Unit = {
     val definitionSteam = ExtractionError.logErrors(extractionStream, logger.info(_))
-    searchEngine.map(_.index(definitionSteam).get)
+    searchEngine match {
+      case -\/(error) => -\/(error)
+      case \/-(engine) =>
+        try {
+          \/-(engine.index(definitionSteam).get)
+        } catch {
+          case NonFatal(t) => -\/(ScapsIndexError(t))
+        }
+    }
   }
 
 }
