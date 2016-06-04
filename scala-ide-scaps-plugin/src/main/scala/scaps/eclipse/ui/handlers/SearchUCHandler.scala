@@ -11,6 +11,8 @@ import scaps.eclipse.core.services.ScapsService
 import scaps.eclipse.ui.search.ScapsSearchQuery
 import scaps.eclipse.util.ErrorHandler
 import scaps.eclipse.core.services.ScapsSettingsService
+import scaps.eclipse.ui.handlers.util.OpenSourceHelper
+import scaps.api.Source
 
 object SearchUCHandler {
   private def INSTANCE = new SearchUCHandler(ScapsService.createSearchService)
@@ -43,5 +45,7 @@ class SearchUCHandler(scapsSearchService: ScapsSearchService) {
     NewSearchUI.runQueryInBackground(new ScapsSearchQuery(query, searchInternal))
     NewSearchUI.activateSearchResultView()
   }
+
+  def openSource(source: Source): Unit = OpenSourceHelper(source)
 
 }
