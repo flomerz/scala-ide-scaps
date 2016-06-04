@@ -55,9 +55,20 @@ object OpenSourceHelper {
   }
 
   private def findJarPackageFragmentRoot(jarFileSource: FileSource): Option[JarPackageFragmentRoot] = {
+    def equals(jarPackageFragmentRoot: JarPackageFragmentRoot, jarPath: String): Boolean = {
+      val isEqual = for {
+        sourcePath <- Option(jarPackageFragmentRoot.getSourceAttachmentPath)
+      } yield {
+        sourcePath.toOSString.equals(jarPath)
+      }
+      isEqual.getOrElse(false)
+    }
+
     val javaProjects = ResourcesPlugin.getWorkspace.getRoot.getProjects.filter(_.hasNature(JavaCore.NATURE_ID)).map(JavaCore.create(_))
-    val allJarPackageFragmentRoots = javaProjects.flatMap(_.getAllPackageFragmentRoots).collect { case j: JarPackageFragmentRoot => j }.filter(_.getSourceAttachmentPath != null)
-    allJarPackageFragmentRoots.filter(_.getSourceAttachmentPath.toOSString().equals(jarFileSource.artifactPath)).headOption
+    javaProjects.flatMap(_.getAllPackageFragmentRoots)
+      .collect { case j: JarPackageFragmentRoot => j }
+      .filter(equals(_, jarFileSource.artifactPath))
+      .headOption
   }
 
   private def selectLineInEditor(editor: IEditorPart, startPos: Int, endPos: Int): Unit = editor match {
