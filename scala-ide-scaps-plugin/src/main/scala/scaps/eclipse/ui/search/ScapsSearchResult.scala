@@ -15,9 +15,20 @@ import scaps.api.ValueDef
  */
 class ScapsSearchResult(query: ScapsSearchQuery) extends ISearchResult {
 
+  class ResultWrapper(r: Result[ValueDef]) extends Result[ValueDef](r.entity, r.score, r.explanation) {
+    override val entity = r.entity
+    override val score = r.score
+    override val explanation = r.explanation
+
+    override def toString = name + typeDef
+
+    val name = r.entity.name
+    val typeDef = entity.docLink.get.dropWhile(_ != '(')
+  }
+
   private var data: Seq[Result[ValueDef]] = _
 
-  def setData(data: Seq[Result[ValueDef]]): Unit = this.data = data
+  def setData(data: Seq[Result[ValueDef]]): Unit = this.data = data.map(new ResultWrapper(_))
   def getData(): Seq[Result[ValueDef]] = data
 
   /**
