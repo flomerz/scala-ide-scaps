@@ -1,4 +1,4 @@
-package scaps.eclipse.util
+package scaps.eclipse.core.util
 
 import org.eclipse.core.runtime.ILog
 import org.eclipse.core.runtime.IProgressMonitor

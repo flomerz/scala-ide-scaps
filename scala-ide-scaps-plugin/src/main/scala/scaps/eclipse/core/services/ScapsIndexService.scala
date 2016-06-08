@@ -20,7 +20,7 @@ import com.typesafe.scalalogging.StrictLogging
 import scalaz._
 import scaps.eclipse.core.adapters.ScapsAdapter
 import scaps.eclipse.core.adapters.ScapsError
-import scaps.eclipse.util.ErrorHandler
+import scaps.eclipse.core.util.ErrorHandler
 
 class ScapsIndexService(private val scapsAdapter: ScapsAdapter) extends StrictLogging {
 
