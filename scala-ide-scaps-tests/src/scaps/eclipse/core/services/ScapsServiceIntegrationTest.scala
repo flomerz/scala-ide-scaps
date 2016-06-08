@@ -11,6 +11,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalaide.core.IScalaProject
 import org.scalaide.core.testsetup.TestProjectSetup
+import org.junit.Ignore
 
 class ScapsServiceIntegrationTest extends TestProjectSetup("simple-structure-builder") {
 
