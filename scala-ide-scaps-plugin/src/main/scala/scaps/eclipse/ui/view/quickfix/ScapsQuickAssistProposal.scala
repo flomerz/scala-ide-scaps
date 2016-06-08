@@ -1,27 +1,25 @@
 package scaps.eclipse.ui.view.quickfix
 
 import scala.reflect.internal.util.RangePosition
+import scala.reflect.internal.util.RangePosition
 
 import org.eclipse.jface.text.IDocument
-import org.scalaide.core.internal.statistics.Features.Feature
-import scala.reflect.internal.util.RangePosition
-import org.scalaide.core.internal.jdt.model.ScalaSourceFile
-import org.scalaide.util.internal.scalariform.ScalariformParser
-import org.scalaide.util.internal.scalariform.ScalariformUtils
-import org.scalaide.core.internal.quickassist.AddMethodProposal
-import org.scalaide.core.internal.quickassist.AddValOrDefProposal
+import org.eclipse.ui.PlatformUI
 import org.scalaide.core.compiler.IScalaPresentationCompiler.Implicits._
 import org.scalaide.core.compiler.InteractiveCompilationUnit
-import org.scalaide.core.internal.statistics.Features.CreateMethod
-import org.scalaide.core.internal.quickassist.createmethod.ParameterListUniquifier
-import org.scalaide.core.quickassist.BasicCompletionProposal
+import org.scalaide.core.internal.quickassist.AddMethodProposal
+import org.scalaide.core.internal.quickassist.AddValOrDefProposal
 import org.scalaide.core.internal.quickassist.createmethod.MissingMemberInfo
+import org.scalaide.core.internal.quickassist.createmethod.ParameterListUniquifier
+import org.scalaide.core.internal.statistics.Features.Feature
 import org.scalaide.core.internal.statistics.Groups
+import org.scalaide.core.quickassist.BasicCompletionProposal
 import org.scalaide.ui.ScalaImages
+import org.scalaide.util.internal.scalariform.ScalariformParser
+import org.scalaide.util.internal.scalariform.ScalariformUtils
+
 import scaps.eclipse.ui.handlers.SearchUCHandler
 import scaps.eclipse.ui.search.ScapsSearchQuery
-import org.eclipse.search.ui.NewSearchUI
-import scaps.eclipse.util.Util
 
 object ScapsFeature extends Feature("ScapsFeature")("Scaps Search", Groups.QuickAssist)
 
@@ -111,7 +109,7 @@ case class ScapsQuickAssistProposal(
   def applyProposal(doc: IDocument): Unit = {
     val (prettyParameterList, returnTypeStr) = getDefInfo(parameters, returnType)
     val text = prettyParameterList + returnTypeStr
-    val window = Util.getWorkbenchWindow
+    val window = PlatformUI.getWorkbench.getWorkbenchWindows.head
     SearchUCHandler().openSearchDialog(window, text)
   }
 

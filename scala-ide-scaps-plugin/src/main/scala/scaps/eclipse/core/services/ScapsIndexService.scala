@@ -17,12 +17,10 @@ import org.eclipse.ui.IWorkingSet
 
 import com.typesafe.scalalogging.StrictLogging
 
-import scalaz.{ \/ => \/ }
-import scalaz.{ -\/ => -\/ }
+import scalaz._
 import scaps.eclipse.core.adapters.ScapsAdapter
 import scaps.eclipse.core.adapters.ScapsError
 import scaps.eclipse.util.ErrorHandler
-import scaps.eclipse.util.Util
 
 class ScapsIndexService(private val scapsAdapter: ScapsAdapter) extends StrictLogging {
 
@@ -34,23 +32,35 @@ class ScapsIndexService(private val scapsAdapter: ScapsAdapter) extends StrictLo
     case _ =>
   }
 
-  def apply(scapsWorkingSet: IWorkingSet): Unit = {
+  def logTime(logger: String => Any, message: String, function: => Any): Unit = {
+    val time = System.currentTimeMillis
+    function
+    val took = System.currentTimeMillis - time
+    val minutes = took / (1000 * 60)
+    val seconds = (took / 1000) - (minutes * 60)
+    val miliseconds = took - (seconds * 1000) - (minutes * 60)
+    logger(message + " took: %sm %ss %sms".format(minutes, seconds, miliseconds))
+  }
+
+  def apply(scapsWorkingSet: IWorkingSet): Job = {
     ScapsSettingsService.setIndexerRunning(true)
 
-    new Job("Scaps Indexer") {
+    val job = new Job("Scaps Indexer") {
       def run(monitor: IProgressMonitor): IStatus = {
         val subMonitor = SubMonitor.convert(monitor, 3)
         monitor.setTaskName("Collect Elements")
         val (classPath, projectSourceFragmentRoots, librarySourceRootFiles) = extractElements(scapsWorkingSet)
         handleIndexError(scapsAdapter.indexReset)
-        Util.logTime(logger.info(_), "indexing libraries", indexLibrariesTask(subMonitor.newChild(1), classPath, librarySourceRootFiles))
-        Util.logTime(logger.info(_), "indexing project sources", indexProjectTask(subMonitor.newChild(1), classPath, projectSourceFragmentRoots))
-        Util.logTime(logger.info(_), "index finalize", indexFinalize(subMonitor.newChild(1)))
+        logTime(logger.info(_), "indexing libraries", indexLibrariesTask(subMonitor.newChild(1), classPath, librarySourceRootFiles))
+        logTime(logger.info(_), "indexing project sources", indexProjectTask(subMonitor.newChild(1), classPath, projectSourceFragmentRoots))
+        logTime(logger.info(_), "index finalize", indexFinalize(subMonitor.newChild(1)))
         ScapsSettingsService.swapIndexDirs
         ScapsSettingsService.setIndexerRunning(false)
         Status.OK_STATUS
       }
-    }.schedule
+    }
+    job.schedule
+    job
   }
 
   private[services] def extractElements(scapsWorkingSet: IWorkingSet): (List[String], List[IPackageFragmentRoot], List[File]) = {

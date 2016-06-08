@@ -1,27 +1,30 @@
 package scaps.eclipse.util
 
+import org.eclipse.core.runtime.ILog
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.IStatus
+import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Status
 import org.eclipse.jface.dialogs.MessageDialog
+import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.progress.UIJob
 
 import com.typesafe.scalalogging.StrictLogging
 
+import scaps.eclipse.ScapsPlugin
 import scaps.eclipse.core.adapters.ScapsEngineError
 import scaps.eclipse.core.adapters.ScapsError
 import scaps.eclipse.core.adapters.ScapsIndexError
 import scaps.eclipse.core.adapters.ScapsSearchError
 import scaps.eclipse.core.adapters.ScapsSearchQueryError
 import scaps.searchEngine.QueryError
-import scaps.eclipse.ScapsPlugin
 
 object ErrorHandler extends StrictLogging {
 
   def apply(scapsError: ScapsError): Unit = {
     def log(msg: String, throwable: Throwable): String = {
       logger.error(msg, throwable)
-      ScapsPlugin.log(msg, throwable)
+      logToErrorLog(msg, throwable)
       msg
     }
     val msg = scapsError match {
@@ -40,11 +43,20 @@ object ErrorHandler extends StrictLogging {
 
     new UIJob("Show Scaps Plugin Error") {
       def runInUIThread(monitor: IProgressMonitor): IStatus = {
-        MessageDialog.openError(Util.getWorkbenchWindow.getShell, "Scaps Plugin", msg)
+        val window = PlatformUI.getWorkbench.getWorkbenchWindows.head
+        MessageDialog.openError(window.getShell, "Scaps Plugin", msg)
         Status.OK_STATUS
       }
     }.schedule
 
   }
+
+  private def getLog: ILog = {
+    val bundle = Platform.getBundle(ScapsPlugin.PLUGIN_ID)
+    Platform.getLog(bundle)
+  }
+
+  def logToErrorLog(msg: String, throwable: Throwable): Unit =
+    getLog.log(new Status(IStatus.ERROR, ScapsPlugin.PLUGIN_ID, msg, throwable))
 
 }

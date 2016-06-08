@@ -5,6 +5,8 @@ import org.eclipse.jface.viewers.Viewer
 
 import com.typesafe.scalalogging.StrictLogging
 import scaps.eclipse.ui.search.ScapsSearchQuery
+import scaps.api.Result
+import scaps.api.ValueDef
 
 /**
  * Responsible for telling Eclipse what content to show after a successful
