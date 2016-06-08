@@ -5,6 +5,7 @@ import org.junit.runners.Suite
 import scaps.eclipse.core.adapters.ScapsAdapterIntegrationTest
 import scaps.eclipse.core.services.ScapsServiceUnitTest
 import scaps.eclipse.core.services.ScapsIndexServiceUnitTest
+import scaps.eclipse.core.services.ScapsServiceIntegrationTest
 import scaps.eclipse.core.services.ScapsIndexServiceUnitTest
 
 @RunWith(classOf[Suite])
@@ -15,6 +16,7 @@ import scaps.eclipse.core.services.ScapsIndexServiceUnitTest
   classOf[ScapsServiceUnitTest],
 
   // Integration
+  classOf[ScapsServiceIntegrationTest],
   classOf[ScapsAdapterIntegrationTest] //
   ))
 class TestsSuite {}
