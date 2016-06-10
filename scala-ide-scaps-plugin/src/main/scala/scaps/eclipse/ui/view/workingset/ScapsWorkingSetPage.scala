@@ -16,7 +16,8 @@ class ScapsWorkingSetPage extends JavaWorkingSetPage {
 
   override def createControl(composite: Composite): Unit = {
     super.createControl(composite)
-
+    super.setTitle("Scaps Configure Indexer")
+    setDescription("Select resources for index")
     // get the working set name text control and disable it
     for {
       subComposite <- composite.getChildren.collectFirst { case c: Composite => c }
